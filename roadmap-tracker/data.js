@@ -70,6 +70,16 @@ window.ROADMAP_DATA = {
                   note: "Best visual explanation of transformers, however, the whole series is encouraged as follow-up"
                 },
                 {
+                  id: "NNDP",
+                  title: "Michael Nielsen's Neural Networks and Deep Learning",
+                  url: "https://neuralnetworksanddeeplearning.com/",
+                  type: "book",
+                  cost: "free",
+                  duration: "~5 hours",
+                  author: "Michael Nielsen",
+                  note: "Great Book for fundamentals of neural networks, which underpin LLMs"
+                },
+                {
                   id: "karpathy-intro-llms",
                   title: "Andrej Karpathy — \"Intro to Large Language Models\"",
                   url: "https://www.youtube.com/watch?v=zjkBMFhNj_g",

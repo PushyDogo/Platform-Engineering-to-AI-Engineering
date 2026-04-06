@@ -4,7 +4,7 @@
 // ============================================================
 
 const STORAGE_KEY = 'ai-roadmap-v1';
-const STORAGE_VERSION = 1;
+const STORAGE_VERSION = 2;
 
 // ── State ───────────────────────────────────────────────────
 let appState = {
@@ -18,11 +18,21 @@ function loadUserState() {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return createDefaultUserState();
     const parsed = JSON.parse(raw);
+    // Migrate v1 → v2: v1 nodes had {status, notes, lastUpdated}; v2 adds resources/concepts
+    if (parsed.version === 1) {
+      parsed.version = 2;
+      // No structural changes needed — resources/concepts default to {} / [] on first access
+      saveUserStateRaw(parsed);
+    }
     if (parsed.version !== STORAGE_VERSION) return createDefaultUserState();
     return parsed;
   } catch {
     return createDefaultUserState();
   }
+}
+
+function saveUserStateRaw(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
 
 function createDefaultUserState() {
@@ -34,11 +44,10 @@ function saveUserState() {
 }
 
 function getNodeState(nodeId) {
-  return appState.userState.nodes[nodeId] || {
-    status: 'not-started',
-    notes: '',
-    lastUpdated: new Date().toISOString()
-  };
+  const stored = appState.userState.nodes[nodeId];
+  if (!stored) return { status: 'not-started', notes: '', resources: {}, concepts: [], lastUpdated: new Date().toISOString() };
+  // Ensure v1 nodes (migrated) always have the new fields
+  return { resources: {}, concepts: [], ...stored };
 }
 
 function setNodeStatus(nodeId, status) {
@@ -62,6 +71,53 @@ function setNodeNotes(nodeId, notes) {
     saveUserState();
     showSavedIndicator();
   }, 300);
+}
+
+function toggleResourceDone(nodeId, resourceId) {
+  const state = getNodeState(nodeId);
+  const resources = { ...state.resources };
+  resources[resourceId] = !resources[resourceId];
+  appState.userState.nodes[nodeId] = { ...state, resources, lastUpdated: new Date().toISOString() };
+  saveUserState();
+  const done = resources[resourceId];
+  // Direct DOM update — avoid re-rendering the panel so notes textarea is untouched
+  const btn = document.getElementById(`res-check-${resourceId}`);
+  const row = document.getElementById(`res-row-${resourceId}`);
+  if (btn) {
+    btn.className = done
+      ? 'res-checkbox w-5 h-5 rounded flex-shrink-0 flex items-center justify-center transition-colors bg-green-600 border border-green-600'
+      : 'res-checkbox w-5 h-5 rounded flex-shrink-0 flex items-center justify-center transition-colors border border-gray-300 hover:border-gray-500 bg-white';
+    btn.innerHTML = done
+      ? `<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>`
+      : '';
+  }
+  if (row) row.style.opacity = done ? '0.5' : '1';
+  // Update the resource count chip on the node card
+  refreshNodeCardSubProgress(nodeId);
+}
+
+function toggleConceptDone(nodeId, conceptIndex) {
+  const state = getNodeState(nodeId);
+  const concepts = [...(state.concepts || [])];
+  while (concepts.length <= conceptIndex) concepts.push(false);
+  concepts[conceptIndex] = !concepts[conceptIndex];
+  appState.userState.nodes[nodeId] = { ...state, concepts, lastUpdated: new Date().toISOString() };
+  saveUserState();
+  const done = concepts[conceptIndex];
+  // Direct DOM update
+  const li = document.getElementById(`concept-${nodeId}-${conceptIndex}`);
+  if (!li) return;
+  const checkbox = li.querySelector('.concept-checkbox');
+  const text = li.querySelector('.concept-text');
+  if (checkbox) {
+    checkbox.className = done
+      ? 'concept-checkbox w-4 h-4 rounded border flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors bg-green-600 border-green-600'
+      : 'concept-checkbox w-4 h-4 rounded border border-gray-300 flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors hover:border-gray-500';
+    checkbox.innerHTML = done
+      ? `<svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>`
+      : '';
+  }
+  if (text) text.className = done ? 'concept-text line-through text-gray-400' : 'concept-text text-gray-700';
 }
 
 // ── Progress Calculation ────────────────────────────────────
@@ -115,9 +171,9 @@ const RESOURCE_ICONS = {
 };
 
 const STATUS_CONFIG = {
-  'not-started': { label: 'Not Started', color: 'text-gray-400', bg: 'bg-gray-700', border: 'border-gray-600', dot: 'bg-gray-500' },
-  'in-progress': { label: 'In Progress', color: 'text-blue-300', bg: 'bg-blue-900/40', border: 'border-blue-600', dot: 'bg-blue-500' },
-  'completed':   { label: 'Completed',   color: 'text-green-300', bg: 'bg-green-900/40', border: 'border-green-600', dot: 'bg-green-500' }
+  'not-started': { label: 'Not Started', color: 'text-gray-500', bg: 'bg-gray-100', border: 'border-gray-300', dot: 'bg-gray-400' },
+  'in-progress': { label: 'In Progress', color: 'text-blue-700', bg: 'bg-blue-50',  border: 'border-blue-400', dot: 'bg-blue-500' },
+  'completed':   { label: 'Completed',   color: 'text-green-700', bg: 'bg-green-50', border: 'border-green-500', dot: 'bg-green-500' }
 };
 
 // ── Render Helpers ───────────────────────────────────────────
@@ -137,7 +193,7 @@ function renderStatusDot(status) {
 }
 
 function renderProgressBar(pct, colorClass = 'bg-blue-500') {
-  return `<div class="h-1.5 bg-gray-700 rounded-full overflow-hidden flex-1">
+  return `<div class="h-1.5 bg-gray-200 rounded-full overflow-hidden flex-1">
     <div class="${colorClass} h-full rounded-full transition-all duration-500" style="width:${pct}%"></div>
   </div>`;
 }
@@ -148,7 +204,7 @@ function renderProgressRing(pct, size = 48, stroke = 4) {
   const dash = (pct / 100) * c;
   const color = pct === 100 ? '#16a34a' : pct > 0 ? '#2563eb' : '#4b5563';
   return `<svg width="${size}" height="${size}" class="transform -rotate-90">
-    <circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="#374151" stroke-width="${stroke}" fill="none"/>
+    <circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="#e5e7eb" stroke-width="${stroke}" fill="none"/>
     <circle cx="${size/2}" cy="${size/2}" r="${r}" stroke="${color}" stroke-width="${stroke}" fill="none"
       stroke-dasharray="${dash} ${c}" stroke-linecap="round" class="transition-all duration-500"/>
   </svg>`;
@@ -156,9 +212,9 @@ function renderProgressRing(pct, size = 48, stroke = 4) {
 
 function renderCostBadge(cost) {
   const map = {
-    'free': 'bg-green-900/60 text-green-300 border border-green-700',
-    'paid': 'bg-red-900/60 text-red-300 border border-red-700',
-    'free-tier': 'bg-yellow-900/60 text-yellow-300 border border-yellow-700'
+    'free': 'bg-green-50 text-green-700 border border-green-300',
+    'paid': 'bg-red-50 text-red-700 border border-red-300',
+    'free-tier': 'bg-yellow-50 text-yellow-700 border border-yellow-300'
   };
   const labels = { 'free': 'Free', 'paid': 'Paid', 'free-tier': 'Free Tier' };
   return `<span class="text-xs px-1.5 py-0.5 rounded ${map[cost] || ''}">${labels[cost] || cost}</span>`;
@@ -185,14 +241,14 @@ function renderNodeCard(node) {
   const isProject = node.isProject;
 
   const borderColor = isProject
-    ? (status === 'completed' ? 'border-l-green-500' : status === 'in-progress' ? 'border-l-blue-500' : 'border-l-amber-500')
-    : (status === 'completed' ? 'border-l-green-500' : status === 'in-progress' ? 'border-l-blue-500' : 'border-l-gray-600');
+    ? (status === 'completed' ? 'border-l-green-500' : status === 'in-progress' ? 'border-l-blue-500' : 'border-l-amber-400')
+    : (status === 'completed' ? 'border-l-green-500' : status === 'in-progress' ? 'border-l-blue-500' : 'border-l-gray-300');
 
   const bgColor = isSelected
-    ? (isProject ? 'bg-amber-950/40' : 'bg-gray-700/60')
+    ? (isProject ? 'bg-amber-50' : 'bg-gray-100')
     : cfg.bg;
 
-  const ringClass = isSelected ? 'ring-2 ring-white/20' : '';
+  const ringClass = isSelected ? 'ring-2 ring-gray-900/10' : '';
 
   return `<div
     id="node-${node.id}"
@@ -204,13 +260,20 @@ function renderNodeCard(node) {
       ${renderStatusDot(status)}
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 flex-wrap">
-          ${isProject ? `<span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Project #${node.projectNumber}</span>` : node.dayLabel ? `<span class="text-xs text-gray-500 font-mono">${node.dayLabel}</span>` : ''}
+          ${isProject ? `<span class="text-xs font-bold text-amber-600 uppercase tracking-wider">Project #${node.projectNumber}</span>` : node.dayLabel ? `<span class="text-xs text-gray-400 font-mono">${node.dayLabel}</span>` : ''}
         </div>
-        <div class="text-sm font-medium text-gray-100 truncate">${node.shortTitle}</div>
+        <div class="text-sm font-medium text-gray-800 truncate">${node.shortTitle}</div>
       </div>
       <div class="flex items-center gap-2 flex-shrink-0">
-        ${node.resources && node.resources.length > 0 ? `<span class="text-xs text-gray-500">${node.resources.length} res</span>` : ''}
-        <svg class="w-4 h-4 text-gray-500 transition-transform duration-200 ${isSelected ? 'rotate-90' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        ${(() => {
+          if (!node.resources || !node.resources.length) return '';
+          const nodeState = getNodeState(node.id);
+          const doneCount = Object.values(nodeState.resources || {}).filter(Boolean).length;
+          const total = node.resources.length;
+          const color = doneCount === total ? 'text-green-600' : doneCount > 0 ? 'text-blue-600' : 'text-gray-400';
+          return `<span id="res-count-${node.id}" class="text-xs ${color}">${doneCount}/${total}</span>`;
+        })()}
+        <svg class="w-4 h-4 text-gray-400 transition-transform duration-200 ${isSelected ? 'rotate-90' : ''}" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
       </div>
     </div>
   </div>`;
@@ -222,6 +285,20 @@ function refreshNodeCard(nodeId) {
   const node = findNode(nodeId);
   if (!node) return;
   el.outerHTML = renderNodeCard(node);
+}
+
+// Lightweight update — only swaps the sub-progress chip without full card re-render
+function refreshNodeCardSubProgress(nodeId) {
+  const chip = document.getElementById(`res-count-${nodeId}`);
+  if (!chip) return;
+  const node = findNode(nodeId);
+  if (!node || !node.resources || !node.resources.length) return;
+  const state = getNodeState(nodeId);
+  const doneCount = Object.values(state.resources || {}).filter(Boolean).length;
+  const total = node.resources.length;
+  const color = doneCount === total ? 'text-green-600' : doneCount > 0 ? 'text-blue-600' : 'text-gray-400';
+  chip.className = `text-xs ${color}`;
+  chip.textContent = `${doneCount}/${total}`;
 }
 
 function findNode(nodeId) {
@@ -249,9 +326,9 @@ function renderWeekGroup(week) {
     <div class="flex items-center gap-3 mb-2 px-1">
       <div class="flex flex-col gap-0.5 flex-1">
         <div class="flex items-center gap-2">
-          <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">${week.title}</span>
-          <span class="text-xs text-gray-500">${week.days}</span>
-          <span class="text-xs text-gray-600 ml-auto">${completed}/${total}</span>
+          <span class="text-xs font-bold text-gray-500 uppercase tracking-wider">${week.title}</span>
+          <span class="text-xs text-gray-400">${week.days}</span>
+          <span class="text-xs text-gray-400 ml-auto">${completed}/${total}</span>
         </div>
         ${renderProgressBar(pct, progressColor)}
       </div>
@@ -259,7 +336,7 @@ function renderWeekGroup(week) {
     <div class="space-y-1.5 pl-0" id="week-nodes-${week.id}">
       ${nodes.map((node, i) => `
         <div class="relative">
-          ${i < nodes.length - 1 ? '<div class="absolute left-[14px] top-[40px] w-0.5 h-[calc(100%+6px)] bg-gray-700/60 z-0"></div>' : ''}
+          ${i < nodes.length - 1 ? '<div class="absolute left-[14px] top-[40px] w-0.5 h-[calc(100%+6px)] bg-gray-300/70 z-0"></div>' : ''}
           <div class="relative z-10">${renderNodeCard(node)}</div>
         </div>
       `).join('')}
@@ -274,15 +351,15 @@ function renderMonthGroup(month) {
   const isExpanded = true; // all expanded by default
 
   return `<div class="month-group mb-3" id="month-${month.id}">
-    <div class="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
+    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden shadow-sm">
       <button
-        class="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-gray-750 transition-colors"
+        class="w-full text-left px-4 py-3 flex items-center gap-3 hover:bg-gray-50 transition-colors"
         onclick="toggleMonth('${month.id}')"
       >
         <div class="flex-1">
           <div class="flex items-center gap-2 flex-wrap">
-            <span class="text-sm font-semibold text-gray-200">${month.title}</span>
-            <span class="text-xs text-gray-400">— ${month.subtitle}</span>
+            <span class="text-sm font-semibold text-gray-800">${month.title}</span>
+            <span class="text-xs text-gray-500">— ${month.subtitle}</span>
           </div>
           <div class="flex items-center gap-2 mt-1.5">
             ${renderProgressBar(pct, pct === 100 ? 'bg-green-500' : 'bg-blue-500')}
@@ -294,7 +371,7 @@ function renderMonthGroup(month) {
       <div id="month-content-${month.id}" class="${isExpanded ? '' : 'hidden'} px-3 pb-3 space-y-1.5">
         ${nodes.map((node, i) => `
           <div class="relative">
-            ${i < nodes.length - 1 ? '<div class="absolute left-[14px] top-[40px] w-0.5 h-[calc(100%+6px)] bg-gray-700/60 z-0"></div>' : ''}
+            ${i < nodes.length - 1 ? '<div class="absolute left-[14px] top-[40px] w-0.5 h-[calc(100%+6px)] bg-gray-300/70 z-0"></div>' : ''}
             <div class="relative z-10">${renderNodeCard(node)}</div>
           </div>
         `).join('')}
@@ -315,8 +392,8 @@ function renderPhaseSection(phase) {
   const nodes = getPhaseNodes(phase.id);
   const { pct, completed, total } = calcProgress(nodes);
   const phaseColors = {
-    'phase-1': { ring: '#3b82f6', text: 'text-blue-400', badge: 'bg-blue-900/40 text-blue-300 border-blue-700' },
-    'phase-2': { ring: '#8b5cf6', text: 'text-purple-400', badge: 'bg-purple-900/40 text-purple-300 border-purple-700' }
+    'phase-1': { ring: '#3b82f6', text: 'text-blue-600', badge: 'bg-blue-50 text-blue-700 border-blue-300' },
+    'phase-2': { ring: '#8b5cf6', text: 'text-purple-600', badge: 'bg-purple-50 text-purple-700 border-purple-300' }
   };
   const colors = phaseColors[phase.id] || phaseColors['phase-1'];
 
@@ -338,9 +415,9 @@ function renderPhaseSection(phase) {
       <div class="flex-1 pt-1">
         <div class="flex items-center gap-2 flex-wrap">
           <span class="text-xs font-bold uppercase tracking-wider border rounded px-2 py-0.5 ${colors.badge}">${phase.title}</span>
-          <h2 class="text-lg font-bold text-white">${phase.subtitle}</h2>
+          <h2 class="text-lg font-bold text-gray-900">${phase.subtitle}</h2>
         </div>
-        <p class="text-sm text-gray-400 mt-0.5">${phase.description}</p>
+        <p class="text-sm text-gray-500 mt-0.5">${phase.description}</p>
         <div class="flex items-center gap-2 mt-2">
           ${renderProgressBar(pct, pct === 100 ? 'bg-green-500' : phase.id === 'phase-2' ? 'bg-purple-500' : 'bg-blue-500')}
           <span class="text-xs text-gray-500 flex-shrink-0">${completed}/${total} completed</span>
@@ -374,22 +451,35 @@ function renderDetailPanel(node) {
         <div class="mb-4">
           <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">${typeLabels[type]}</h4>
           <div class="space-y-2">
-            ${items.map(r => `
-              <a href="${r.url}" target="_blank" rel="noopener noreferrer"
-                class="flex items-start gap-2.5 p-2.5 rounded-lg bg-gray-800 hover:bg-gray-750 border border-gray-700 hover:border-gray-600 transition-colors group">
-                <span class="${getResourceTypeColor(r.type)} mt-0.5 flex-shrink-0">${RESOURCE_ICONS[r.type] || ''}</span>
-                <div class="flex-1 min-w-0">
-                  <div class="text-sm text-gray-200 group-hover:text-white transition-colors leading-snug">${r.title}</div>
-                  <div class="flex items-center gap-2 mt-1 flex-wrap">
-                    ${r.author ? `<span class="text-xs text-gray-500">${r.author}</span>` : ''}
-                    ${r.duration ? `<span class="text-xs text-gray-600">· ${r.duration}</span>` : ''}
-                    ${renderCostBadge(r.cost)}
-                    ${r.note ? `<span class="text-xs text-amber-400/80 italic">★ ${r.note}</span>` : ''}
+            ${items.map(r => {
+              const done = state.resources[r.id] === true;
+              return `<div id="res-row-${r.id}" class="flex items-start gap-2" style="opacity:${done ? '0.5' : '1'}">
+                <a href="${r.url}" target="_blank" rel="noopener noreferrer"
+                  class="flex-1 flex items-start gap-2.5 p-2.5 rounded-lg bg-gray-50 hover:bg-gray-100 border border-gray-200 hover:border-gray-300 transition-colors group min-w-0">
+                  <span class="${getResourceTypeColor(r.type)} mt-0.5 flex-shrink-0">${RESOURCE_ICONS[r.type] || ''}</span>
+                  <div class="flex-1 min-w-0">
+                    <div class="text-sm ${done ? 'line-through text-gray-400' : 'text-gray-800 group-hover:text-gray-900'} transition-colors leading-snug">${r.title}</div>
+                    <div class="flex items-center gap-2 mt-1 flex-wrap">
+                      ${r.author ? `<span class="text-xs text-gray-500">${r.author}</span>` : ''}
+                      ${r.duration ? `<span class="text-xs text-gray-400">· ${r.duration}</span>` : ''}
+                      ${renderCostBadge(r.cost)}
+                      ${r.note ? `<span class="text-xs text-amber-600 italic">★ ${r.note}</span>` : ''}
+                    </div>
                   </div>
-                </div>
-                <svg class="w-3.5 h-3.5 text-gray-600 group-hover:text-gray-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
-              </a>
-            `).join('')}
+                  <svg class="w-3.5 h-3.5 text-gray-300 group-hover:text-gray-500 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </a>
+                <button
+                  id="res-check-${r.id}"
+                  onclick="toggleResourceDone('${node.id}', '${r.id}')"
+                  title="${done ? 'Mark as not done' : 'Mark as done'}"
+                  class="${done
+                    ? 'res-checkbox w-5 h-5 rounded flex-shrink-0 flex items-center justify-center transition-colors bg-green-600 border border-green-600 mt-2.5'
+                    : 'res-checkbox w-5 h-5 rounded flex-shrink-0 flex items-center justify-center transition-colors border border-gray-300 hover:border-gray-500 bg-white mt-2.5'}"
+                >
+                  ${done ? `<svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>` : ''}
+                </button>
+              </div>`;
+            }).join('')}
           </div>
         </div>
       `).join('');
@@ -397,13 +487,13 @@ function renderDetailPanel(node) {
   return `
     <div class="flex flex-col h-full">
       <!-- Panel Header -->
-      <div class="flex-shrink-0 border-b border-gray-700 p-4">
+      <div class="flex-shrink-0 border-b border-gray-200 p-4">
         <div class="flex items-start justify-between gap-2 mb-3">
           <div class="flex-1">
-            ${node.isProject ? `<div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1">Project #${node.projectNumber}</div>` : node.dayLabel ? `<div class="text-xs font-mono text-gray-500 mb-1">${node.dayLabel}</div>` : ''}
-            <h3 class="text-base font-bold text-white leading-snug">${node.title}</h3>
+            ${node.isProject ? `<div class="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1">Project #${node.projectNumber}</div>` : node.dayLabel ? `<div class="text-xs font-mono text-gray-400 mb-1">${node.dayLabel}</div>` : ''}
+            <h3 class="text-base font-bold text-gray-900 leading-snug">${node.title}</h3>
           </div>
-          <button onclick="closePanel()" class="text-gray-500 hover:text-gray-300 transition-colors flex-shrink-0 mt-1">
+          <button onclick="closePanel()" class="text-gray-400 hover:text-gray-700 transition-colors flex-shrink-0 mt-1">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
           </button>
         </div>
@@ -414,7 +504,7 @@ function renderDetailPanel(node) {
             const isActive = status === s;
             return `<button
               onclick="setNodeStatus('${node.id}', '${s}')"
-              class="flex-1 text-xs py-1.5 px-2 rounded-lg font-medium transition-all duration-150 border ${isActive ? cfg.bg + ' ' + cfg.color + ' ' + cfg.border : 'bg-gray-800 text-gray-500 border-gray-700 hover:bg-gray-750'}"
+              class="flex-1 text-xs py-1.5 px-2 rounded-lg font-medium transition-all duration-150 border ${isActive ? cfg.bg + ' ' + cfg.color + ' ' + cfg.border : 'bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-200'}"
               data-status="${s}"
             >${cfg.label}</button>`;
           }).join('')}
@@ -425,28 +515,40 @@ function renderDetailPanel(node) {
       <div class="flex-1 overflow-y-auto p-4 space-y-5">
 
         <!-- Description -->
-        <p class="text-sm text-gray-300 leading-relaxed">${node.description}</p>
+        <p class="text-sm text-gray-600 leading-relaxed">${node.description}</p>
 
         <!-- Key Concepts -->
         ${node.concepts && node.concepts.length > 0 ? `
           <div>
-            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Key Concepts</h4>
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider">Key Concepts</h4>
+              <span class="text-xs text-gray-400">${state.concepts.filter(Boolean).length}/${node.concepts.length}</span>
+            </div>
             <ul class="space-y-1.5">
-              ${node.concepts.map(c => `
-                <li class="flex items-start gap-2 text-sm text-gray-300">
-                  <span class="text-blue-400 mt-1 flex-shrink-0">›</span>
-                  <span>${c}</span>
-                </li>
-              `).join('')}
+              ${node.concepts.map((c, i) => {
+                const done = state.concepts[i] === true;
+                return `<li
+                  id="concept-${node.id}-${i}"
+                  class="flex items-start gap-2 text-sm cursor-pointer group select-none"
+                  onclick="toggleConceptDone('${node.id}', ${i})"
+                >
+                  <div class="${done
+                    ? 'concept-checkbox w-4 h-4 rounded border flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors bg-green-600 border-green-600'
+                    : 'concept-checkbox w-4 h-4 rounded border border-gray-300 flex-shrink-0 mt-0.5 flex items-center justify-center transition-colors hover:border-gray-500'}">
+                    ${done ? `<svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>` : ''}
+                  </div>
+                  <span class="${done ? 'concept-text line-through text-gray-400' : 'concept-text text-gray-700'}">${c}</span>
+                </li>`;
+              }).join('')}
             </ul>
           </div>
         ` : ''}
 
         <!-- Practice Prompt -->
         ${node.practicePrompt ? `
-          <div class="bg-amber-950/30 border border-amber-800/50 rounded-lg p-3">
-            <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1.5">Practice Exercise</div>
-            <p class="text-sm text-amber-100/80">${node.practicePrompt}</p>
+          <div class="bg-amber-50 border border-amber-200 rounded-lg p-3">
+            <div class="text-xs font-bold text-amber-700 uppercase tracking-wider mb-1.5">Practice Exercise</div>
+            <p class="text-sm text-amber-800">${node.practicePrompt}</p>
           </div>
         ` : ''}
 
@@ -464,7 +566,7 @@ function renderDetailPanel(node) {
           </div>
           <textarea
             id="notes-textarea"
-            class="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-sm text-gray-300 placeholder-gray-600 focus:outline-none focus:border-gray-500 resize-none h-32"
+            class="w-full bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-gray-400 resize-none h-32"
             placeholder="Write your notes here… reminders, key takeaways, questions to revisit…"
             oninput="setNodeNotes('${node.id}', this.value)"
           >${notes || ''}</textarea>
@@ -476,10 +578,10 @@ function renderDetailPanel(node) {
 
 function getResourceTypeColor(type) {
   const map = {
-    video: 'text-red-400', article: 'text-sky-400', book: 'text-purple-400',
-    course: 'text-orange-400', tool: 'text-teal-400', github: 'text-gray-400'
+    video: 'text-red-500', article: 'text-sky-600', book: 'text-purple-600',
+    course: 'text-orange-500', tool: 'text-teal-600', github: 'text-gray-600'
   };
-  return map[type] || 'text-gray-400';
+  return map[type] || 'text-gray-500';
 }
 
 function showSavedIndicator() {
@@ -496,7 +598,7 @@ function updatePanelStatusButtons(activeStatus) {
     const s = btn.dataset.status;
     const cfg = STATUS_CONFIG[s];
     const isActive = s === activeStatus;
-    btn.className = `flex-1 text-xs py-1.5 px-2 rounded-lg font-medium transition-all duration-150 border ${isActive ? cfg.bg + ' ' + cfg.color + ' ' + cfg.border : 'bg-gray-800 text-gray-500 border-gray-700 hover:bg-gray-750'}`;
+    btn.className = `flex-1 text-xs py-1.5 px-2 rounded-lg font-medium transition-all duration-150 border ${isActive ? cfg.bg + ' ' + cfg.color + ' ' + cfg.border : 'bg-gray-100 text-gray-500 border-gray-200 hover:bg-gray-200'}`;
   });
 }
 
@@ -578,24 +680,24 @@ function renderTopNav() {
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
           </div>
           <div>
-            <div class="text-sm font-bold text-white">${ROADMAP_DATA.meta.title}</div>
-            <div class="text-xs text-gray-400">${ROADMAP_DATA.meta.subtitle}</div>
+            <div class="text-sm font-bold text-gray-900">${ROADMAP_DATA.meta.title}</div>
+            <div class="text-xs text-gray-500">${ROADMAP_DATA.meta.subtitle}</div>
           </div>
         </div>
       </div>
       <div class="flex items-center gap-3 flex-1 max-w-xs">
         <div class="flex-1">
           <div class="flex items-center justify-between mb-1">
-            <span class="text-xs text-gray-400">Overall Progress</span>
-            <span id="overall-progress-label" class="text-xs text-gray-400">${completed}/${total}</span>
+            <span class="text-xs text-gray-500">Overall Progress</span>
+            <span id="overall-progress-label" class="text-xs text-gray-500">${completed}/${total}</span>
           </div>
-          <div class="h-2 bg-gray-700 rounded-full overflow-hidden">
+          <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
             <div id="overall-progress-bar" class="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500" style="width:${pct}%"></div>
           </div>
         </div>
-        <span id="overall-progress-pct" class="text-sm font-bold text-white w-10 text-right">${pct}%</span>
+        <span id="overall-progress-pct" class="text-sm font-bold text-gray-900 w-10 text-right">${pct}%</span>
       </div>
-      <button onclick="resetProgress()" class="text-xs text-gray-600 hover:text-gray-400 transition-colors px-2 py-1 rounded border border-gray-700 hover:border-gray-600">Reset</button>
+      <button onclick="resetProgress()" class="text-xs text-gray-400 hover:text-gray-700 transition-colors px-2 py-1 rounded border border-gray-200 hover:border-gray-400">Reset</button>
     </div>
   `;
 }

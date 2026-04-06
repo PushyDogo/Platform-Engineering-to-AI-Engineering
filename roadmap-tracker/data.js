@@ -50,6 +50,16 @@ window.ROADMAP_DATA = {
               ],
               resources: [
                 {
+                  id: "3b1b-nn",
+                  title: "But what is a neural network? | Deep learning chapter 1",
+                  url: "https://www.youtube.com/watch?v=aircAruvnKk",
+                  type: "video",
+                  cost: "free",
+                  duration: "~29 min",
+                  author: "3Blue1Brown",
+                  note: "Great start for Neural Networks, which is the foundation for understanding LLMs"
+                },
+                {
                   id: "3b1b-gpt",
                   title: "3Blue1Brown — \"But what is a GPT?\"",
                   url: "https://www.youtube.com/watch?v=wjZofJX0v4M",
@@ -57,7 +67,7 @@ window.ROADMAP_DATA = {
                   cost: "free",
                   duration: "~25 min",
                   author: "3Blue1Brown",
-                  note: "Best visual explanation of transformers"
+                  note: "Best visual explanation of transformers, however, the whole series is encouraged as follow-up"
                 },
                 {
                   id: "karpathy-intro-llms",

@@ -9,8 +9,8 @@ window.ROADMAP_DATA = {
   meta: {
     title: "DevOps → AI Engineer",
     subtitle: "The Complete Transition Roadmap",
-    description: "Your path from DevOps Engineer to AI Engineer. Job-ready in ~1 month, then continued depth over months 2–6+.",
-    version: "1.0"
+    description: "Your path from DevOps Engineer to AI Engineer. Job-ready in ~1 month, with stronger foundations in evaluation, backend systems, retrieval quality, security, and LLMOps.",
+    version: "1.1"
   },
   phases: [
     // ========================================================
@@ -29,9 +29,9 @@ window.ROADMAP_DATA = {
         {
           id: "week-1",
           title: "Week 1",
-          subtitle: "Foundations — LLMs, Prompt Engineering & Python for AI",
+          subtitle: "Foundations — LLMs, Prompting, Python & AI App Basics",
           days: "Days 1–7",
-          goal: "Understand how LLMs work, master prompt engineering, and get comfortable with the Python AI ecosystem",
+          goal: "Understand how LLMs work, build strong prompting habits, and get comfortable with the Python and backend fundamentals used in AI applications",
           nodes: [
             {
               id: "w1-day1-2",
@@ -169,15 +169,18 @@ window.ROADMAP_DATA = {
             {
               id: "w1-day5",
               type: "day",
-              title: "Day 5: Structured Outputs, Context Windows & Cost Awareness",
-              shortTitle: "Structured Outputs & Cost",
+              title: "Day 5: Structured Outputs, Eval Harness, Context Windows & Cost Awareness",
+              shortTitle: "Structured Outputs & Evals",
               dayLabel: "Day 5",
-              description: "Before building anything, understand the mechanics that determine whether your AI app works reliably and affordably. This day covers JSON mode, schema enforcement, prompt caching, and how to estimate costs.",
+              description: "Before building anything, learn how to make AI apps reliable and measurable. This day covers structured outputs, lightweight evaluation, prompt caching, and cost estimation so you build good habits from the start.",
               concepts: [
                 "JSON mode: forcing the model to return valid JSON",
                 "Pydantic models for output validation",
                 "Tool/function calling: the model selects and populates a function signature",
                 "Error handling for malformed outputs (retry logic, json-repair)",
+                "Golden datasets: 10–30 representative prompts you run on every change",
+                "Lightweight regression testing for prompts and structured outputs",
+                "Track latency, token usage, cost, and failure rate from the first prototype",
                 "Context windows: 8K to 200K+ tokens, cost implications",
                 "Prompt caching: reduce cost by up to 90% (Anthropic & OpenAI)",
                 "Context compression: summarizing earlier turns to stay within limits",
@@ -209,24 +212,54 @@ window.ROADMAP_DATA = {
                   cost: "free",
                   author: "OpenAI",
                   note: "Get comfortable estimating costs"
+                },
+                {
+                  id: "openai-evals-guide",
+                  title: "OpenAI Evals Guide",
+                  url: "https://developers.openai.com/api/docs/guides/evals",
+                  type: "article",
+                  cost: "free",
+                  author: "OpenAI",
+                  note: "Use this to build a simple eval loop from day one"
+                },
+                {
+                  id: "langsmith-eval-concepts",
+                  title: "LangSmith — Evaluation Concepts",
+                  url: "https://docs.langchain.com/langsmith/evaluation-concepts",
+                  type: "article",
+                  cost: "free-tier",
+                  author: "LangChain",
+                  note: "Clear mental model for dataset-based evaluation"
+                },
+                {
+                  id: "promptfoo-intro",
+                  title: "Promptfoo Documentation",
+                  url: "https://www.promptfoo.dev/docs/intro/",
+                  type: "article",
+                  cost: "free",
+                  note: "Open-source prompt and regression testing"
                 }
               ]
             },
             {
               id: "w1-day6-7",
               type: "day",
-              title: "Day 6–7: Python AI Ecosystem & LLM APIs",
-              shortTitle: "Python AI Ecosystem",
+              title: "Day 6–7: Python AI Ecosystem, FastAPI & LLM APIs",
+              shortTitle: "Python, FastAPI & APIs",
               dayLabel: "Day 6–7",
-              description: "You likely know Python basics from DevOps scripting. Now learn the AI-specific libraries: the OpenAI, Anthropic, and Gemini APIs, streaming responses, token counting, and error handling.",
+              description: "You likely know Python basics from DevOps scripting. Now connect that to production AI app development: provider SDKs, async Python, FastAPI endpoints, streaming responses, retries, and simple stateful infrastructure.",
               concepts: [
                 "OpenAI API — chat completions, function calling, structured outputs",
                 "Anthropic API — messages API, tool use, prompt caching",
                 "Google Gemini API",
+                "FastAPI basics: request/response models, validation, dependency injection",
+                "Async Python fundamentals: asyncio, concurrency, non-blocking API calls",
                 "Handling streaming responses",
                 "Token counting and cost estimation",
                 "Error handling, retries, and rate limiting",
-                "Using pydantic for structured outputs"
+                "Using pydantic for structured outputs",
+                "Designing a thin application layer: env vars, config, logging, and provider abstraction",
+                "When to add Postgres/pgvector and Redis to an AI app"
               ],
               resources: [
                 {
@@ -264,23 +297,71 @@ window.ROADMAP_DATA = {
                   cost: "free",
                   author: "OpenAI",
                   note: "Practical examples"
+                },
+                {
+                  id: "fastapi-docs",
+                  title: "FastAPI Documentation",
+                  url: "https://fastapi.tiangolo.com/",
+                  type: "article",
+                  cost: "free",
+                  author: "FastAPI",
+                  note: "Best first backend framework for AI services"
+                },
+                {
+                  id: "pydantic-docs",
+                  title: "Pydantic Documentation",
+                  url: "https://docs.pydantic.dev/latest/",
+                  type: "article",
+                  cost: "free",
+                  author: "Pydantic",
+                  note: "Validation and schema backbone for reliable AI apps"
+                },
+                {
+                  id: "postgres-docs",
+                  title: "PostgreSQL Documentation",
+                  url: "https://www.postgresql.org/docs/",
+                  type: "article",
+                  cost: "free",
+                  author: "PostgreSQL",
+                  note: "Useful once you move beyond toy demos"
+                },
+                {
+                  id: "redis-docs",
+                  title: "Redis Documentation",
+                  url: "https://redis.io/docs/latest/",
+                  type: "article",
+                  cost: "free",
+                  author: "Redis",
+                  note: "Great for caching, queues, and short-lived state"
+                },
+                {
+                  id: "celery-docs",
+                  title: "Celery Documentation",
+                  url: "https://docs.celeryq.dev/en/stable/",
+                  type: "article",
+                  cost: "free",
+                  author: "Celery",
+                  note: "Good background-job model for ingestion and async processing"
                 }
               ]
             },
             {
               id: "w1-project1",
               type: "project",
-              title: "Project #1 — DevOps AI Assistant CLI",
-              shortTitle: "DevOps AI Assistant",
+              title: "Project #1 — DevOps AI Assistant Service",
+              shortTitle: "DevOps AI Assistant Service",
               dayLabel: "Days 6–7",
               isProject: true,
               projectNumber: 1,
-              description: "Build a CLI tool that takes a description of an infrastructure problem, queries an LLM API to generate a diagnosis and solution, supports multiple providers, handles errors and streaming, and outputs structured JSON.",
+              description: "Build a small but production-shaped AI service that takes an infrastructure problem, queries an LLM API to generate a diagnosis and solution, supports multiple providers, and exposes both a CLI and FastAPI endpoint.",
               concepts: [
                 "Supports multiple providers (OpenAI, Anthropic) with a config flag",
+                "Expose one FastAPI endpoint and one CLI entrypoint on top of the same core logic",
                 "Handles errors, retries, and streaming output",
                 "Outputs structured JSON for integration with ticketing systems",
-                "Demonstrates: API integration, error handling, structured outputs"
+                "Stores a small golden dataset for regression testing",
+                "Logs latency, token usage, and estimated cost per request",
+                "Demonstrates: API integration, error handling, structured outputs, backend fundamentals"
               ],
               resources: []
             }
@@ -294,7 +375,7 @@ window.ROADMAP_DATA = {
           title: "Week 2",
           subtitle: "RAG (Retrieval-Augmented Generation) & Vector Databases",
           days: "Days 8–14",
-          goal: "Build production-quality RAG systems — the single most in-demand AI engineering skill in 2026",
+          goal: "Build production-quality RAG systems with strong ingestion, retrieval evaluation, and basic security thinking",
           nodes: [
             {
               id: "w2-day8-9",
@@ -302,13 +383,15 @@ window.ROADMAP_DATA = {
               title: "Day 8–9: Embeddings & Vector Databases",
               shortTitle: "Embeddings & Vector DBs",
               dayLabel: "Day 8–9",
-              description: "Learn what embeddings are, how vector databases work, and when to use which vector DB (Pinecone, Weaviate, Chroma, Qdrant, pgvector).",
+              description: "Learn what embeddings are, how vector databases work, and when to use which vector DB. Start with pgvector or Chroma for practical ownership, then branch into managed options when you need them.",
               concepts: [
                 "Embeddings: dense vector representations capturing semantic meaning",
                 "Embedding models: OpenAI text-embedding-3, Cohere Embed, sentence-transformers, BGE",
                 "Similarity metrics: cosine similarity, dot product, Euclidean distance",
                 "Vector DB fundamentals: indexing (HNSW vs. IVF), metadata filtering",
-                "Pinecone (managed), Weaviate (feature-rich), Chroma (lightweight/local), pgvector, Qdrant"
+                "Metadata schema design: source, freshness, product area, permissions",
+                "Chroma (lightweight/local) and pgvector (best if you already know Postgres) as first choices",
+                "When managed systems like Pinecone make sense"
               ],
               resources: [
                 {
@@ -344,6 +427,14 @@ window.ROADMAP_DATA = {
                   type: "article",
                   cost: "free",
                   note: "Simplest way to get started locally"
+                },
+                {
+                  id: "pgvector-docs",
+                  title: "pgvector (Postgres Vector Search)",
+                  url: "https://github.com/pgvector/pgvector",
+                  type: "github",
+                  cost: "free",
+                  note: "The most practical production path if you already think in Postgres"
                 }
               ]
             },
@@ -356,11 +447,15 @@ window.ROADMAP_DATA = {
               description: "Master the full RAG pipeline: document loading, chunking strategies, hybrid search, reranking, and evaluation. Chunking strategy matters enormously for retrieval quality.",
               concepts: [
                 "Document loading: PDFs, web pages, markdown, databases",
+                "Document normalization: stripping boilerplate, preserving headings, tables, and links",
+                "Deduplication and content cleaning before embedding",
+                "Metadata tagging during ingestion so retrieval can filter well",
                 "Chunking strategies: fixed-size, semantic, recursive, hierarchical",
                 "Chunk overlap and why it helps",
                 "Full RAG pipeline: load → chunk → embed → store → retrieve → rerank → generate",
                 "Hybrid search: combining dense (vector) and sparse (BM25/keyword) retrieval",
                 "Reranking: using cross-encoders (Cohere Rerank, BGE Reranker)",
+                "Answer grounding: citations and source snippets in every response",
                 "Evaluation: retrieval metrics (precision@k, recall@k) and generation metrics"
               ],
               resources: [
@@ -397,16 +492,24 @@ window.ROADMAP_DATA = {
                   cost: "paid",
                   author: "Paul Iusztin & Maxime Labonne",
                   note: "RAG architecture patterns"
+                },
+                {
+                  id: "unstructured-io-early",
+                  title: "Unstructured.io",
+                  url: "https://unstructured.io/",
+                  type: "tool",
+                  cost: "free-tier",
+                  note: "Useful for real ingestion pipelines over messy documents"
                 }
               ]
             },
             {
               id: "w2-day13-14",
               type: "day",
-              title: "Day 13–14: Advanced RAG Patterns",
-              shortTitle: "Advanced RAG Patterns",
+              title: "Day 13–14: Advanced RAG Patterns, Retrieval Quality & Security",
+              shortTitle: "Advanced RAG & Security",
               dayLabel: "Day 13–14",
-              description: "Go beyond basic RAG. Learn multi-query RAG, RAG Fusion, Self-RAG, agentic RAG, parent-child chunking, metadata filtering, and query routing.",
+              description: "Go beyond basic RAG. Learn advanced retrieval patterns, but also learn how RAG systems fail: poor chunking, stale data, prompt injection via retrieved content, and weak evaluation.",
               concepts: [
                 "Multi-query RAG: generating multiple search queries from one user question",
                 "RAG Fusion: combining results from multiple retrieval strategies",
@@ -414,7 +517,10 @@ window.ROADMAP_DATA = {
                 "Agentic RAG: agent decides retrieval strategy dynamically",
                 "Parent-child chunking: retrieve small chunks but pass larger context",
                 "Metadata filtering: narrow search by date, source, category",
-                "Query routing: sending different question types to different data sources"
+                "Query routing: sending different question types to different data sources",
+                "Retrieved-content trust boundaries: treat docs as untrusted input",
+                "Prompt injection in RAG and how to defend against it",
+                "Build a small benchmark set and inspect failed retrievals manually"
               ],
               resources: [
                 {
@@ -441,6 +547,14 @@ window.ROADMAP_DATA = {
                   type: "course",
                   cost: "paid",
                   note: "Very thorough"
+                },
+                {
+                  id: "owasp-rag-security",
+                  title: "OWASP Top 10 for LLM Applications",
+                  url: "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+                  type: "article",
+                  cost: "free",
+                  note: "Read the prompt injection and data exposure sections before shipping RAG"
                 }
               ]
             },
@@ -452,15 +566,18 @@ window.ROADMAP_DATA = {
               dayLabel: "Days 10–14",
               isProject: true,
               projectNumber: 2,
-              description: "Build a RAG application over technical documentation (Kubernetes docs, Terraform docs, or your company's runbooks). This is the single best portfolio project for getting hired.",
+              description: "Build a RAG application over technical documentation (Kubernetes docs, Terraform docs, or your company's runbooks). This should feel like a real internal tool, not a toy chatbot.",
               concepts: [
                 "Ingest docs from multiple sources (web scraping, PDFs, markdown)",
+                "Normalize documents, deduplicate them, and attach useful metadata",
                 "Implement at least 2 chunking strategies and compare retrieval quality",
-                "Vector database: Chroma locally, or Pinecone for cloud",
+                "Vector database: pgvector or Chroma locally; move to managed only if needed",
                 "Add hybrid search (vector + keyword) and a reranker",
                 "Simple web UI (Streamlit or Gradio)",
+                "Return citations for every answer",
                 "Basic evaluation: track retrieval precision and answer faithfulness",
-                "Deploy it (Docker container on a cloud instance)"
+                "Add a small auth layer or per-user context if you can",
+                "Deploy it (Docker container on a cloud instance) with logs and cost tracking"
               ],
               resources: []
             }
@@ -472,7 +589,7 @@ window.ROADMAP_DATA = {
         {
           id: "week-3",
           title: "Week 3",
-          subtitle: "AI Agents & Frameworks",
+          subtitle: "AI Agents, MCP & Safe Tooling",
           days: "Days 15–21",
           goal: "Build autonomous AI agents that can use tools, plan multi-step tasks, and interact with external systems",
           nodes: [
@@ -482,14 +599,16 @@ window.ROADMAP_DATA = {
               title: "Day 15–16: Agent Fundamentals",
               shortTitle: "Agent Fundamentals",
               dayLabel: "Day 15–16",
-              description: "Understand what an AI agent is: a system that can plan, use tools, and make decisions based on intermediate results. Master the ReAct loop and tool/function calling.",
+              description: "Understand what an AI agent is: a system that can plan, use tools, and make decisions based on intermediate results. Focus on tool schemas, safe execution, approval gates, and durable state rather than hype.",
               concepts: [
                 "What an agent is: plan, use tools, make decisions based on results",
                 "The ReAct loop: Reason → Act → Observe → Repeat",
                 "Tool/function calling: how LLMs invoke external functions",
                 "Memory: short-term (conversation history), long-term (vector store)",
                 "Planning strategies: single-step, multi-step, tree-of-thought",
-                "Guardrails: preventing agents from taking destructive actions"
+                "Guardrails: preventing agents from taking destructive actions",
+                "Approval gates for any side-effecting operation",
+                "Tool design: idempotency, timeouts, retries, and typed inputs"
               ],
               resources: [
                 {
@@ -524,12 +643,12 @@ window.ROADMAP_DATA = {
               title: "Day 17–18: Agent Frameworks",
               shortTitle: "Agent Frameworks",
               dayLabel: "Day 17–18",
-              description: "Learn LangGraph (graph-based, best for complex workflows), CrewAI (role-based multi-agent), and OpenAI Agents SDK (lightweight, fastest path to working agents). Know at least two well.",
+              description: "Pick one primary framework and one secondary framework. Go deep enough to build one robust agent system instead of skimming five ecosystems.",
               concepts: [
-                "LangGraph: graph-based workflow (nodes, edges, state), conditional routing, checkpointing",
-                "CrewAI: role-based multi-agent collaboration, simpler API, native MCP support",
-                "OpenAI Agents SDK: lightweight, works with 100+ models, handoff patterns",
-                "When to use which: LangGraph for complex workflows, CrewAI for role-based, SDK for speed"
+                "Primary recommendation: LangGraph for durable state, conditional routing, and human-in-the-loop workflows",
+                "Secondary option: OpenAI Agents SDK for fast prototyping and handoffs, or CrewAI if you specifically want role-based multi-agent patterns",
+                "Avoid framework-driven design; start from workflow and failure modes",
+                "When to use which: LangGraph for complex workflows, SDK for speed, CrewAI for explicit agent roles"
               ],
               resources: [
                 {
@@ -586,7 +705,8 @@ window.ROADMAP_DATA = {
                 "MCP servers and clients",
                 "Transport mechanisms (stdio, HTTP SSE)",
                 "Tool discovery and schema",
-                "Why it matters: build once, connect to any AI framework"
+                "Why it matters: build once, connect to many clients and agent runtimes",
+                "Design stable tool contracts and avoid leaking unsafe capabilities by default"
               ],
               resources: [
                 {
@@ -611,15 +731,16 @@ window.ROADMAP_DATA = {
             {
               id: "w3-day20-21",
               type: "day",
-              title: "Day 20–21: Workflow Automation",
-              shortTitle: "Workflow Automation",
+              title: "Day 20–21: Optional Visual Automation Tools",
+              shortTitle: "Optional Visual Tools",
               dayLabel: "Day 20–21",
-              description: "Learn the visual/low-code AI workflow tools: n8n (open-source, with AI nodes), LangFlow (visual LangChain builder), and Flowise (drag-and-drop LLM apps).",
+              description: "Learn the visual/low-code AI workflow tools only as an optional acceleration layer. They are useful for demos, internal automation, and quick experiments, but should not replace understanding the core code path.",
               concepts: [
                 "n8n: open-source workflow automation with AI nodes",
                 "LangFlow: visual LangChain builder",
                 "Flowise: drag-and-drop LLM app builder",
-                "When to use visual tools vs. code"
+                "When to use visual tools vs. code",
+                "Use these after you can already build the same flow in code"
               ],
               resources: [
                 {
@@ -643,12 +764,12 @@ window.ROADMAP_DATA = {
             {
               id: "w3-project3",
               type: "project",
-              title: "Project #3 — Multi-Tool AI Agent",
-              shortTitle: "Multi-Tool AI Agent",
+              title: "Project #3 — DevOps Copilot Platform",
+              shortTitle: "DevOps Copilot Platform",
               dayLabel: "Days 15–21",
               isProject: true,
               projectNumber: 3,
-              description: "Build an AI agent that acts as a DevOps copilot. Exposes it via MCP so it can be used with any AI client.",
+              description: "Extend your earlier projects into a single DevOps copilot platform with retrieval, tools, approval gates, and MCP exposure. This should look like a production internal assistant rather than a generic autonomous agent demo.",
               concepts: [
                 "Can query cloud APIs (AWS/GCP status, instance info)",
                 "Can search through logs and documentation (using your RAG system)",
@@ -656,8 +777,10 @@ window.ROADMAP_DATA = {
                 "Can execute safe diagnostic commands",
                 "Has memory across conversations",
                 "Guardrails: cannot delete resources, requires confirmation for changes",
-                "Built with LangGraph or CrewAI",
-                "Exposed via MCP server"
+                "Built primarily with LangGraph; add one secondary framework only if it adds clear value",
+                "Expose via MCP server",
+                "Add audit logs, role boundaries, and clear tool approval UX",
+                "Show end-to-end architecture from API layer to retrieval to tool execution"
               ],
               resources: []
             }
@@ -741,7 +864,8 @@ window.ROADMAP_DATA = {
                 "A/B testing prompts and models",
                 "Caching strategies (semantic caching, prompt caching)",
                 "Cost optimization: model routing, prompt compression",
-                "Observability stack: LangSmith, Helicone, Weights & Biases"
+                "Observability stack: LangSmith, Helicone, Weights & Biases",
+                "CI for AI changes: run evals on every prompt, retrieval, or model change"
               ],
               resources: [
                 {
@@ -788,6 +912,14 @@ window.ROADMAP_DATA = {
                   type: "tool",
                   cost: "free-tier",
                   note: "ML experiment tracking"
+                },
+                {
+                  id: "github-actions-docs",
+                  title: "GitHub Actions Documentation",
+                  url: "https://docs.github.com/en/actions",
+                  type: "article",
+                  cost: "free",
+                  note: "Use this to wire prompt and eval regression checks into CI"
                 }
               ]
             },
@@ -891,7 +1023,7 @@ window.ROADMAP_DATA = {
           id: "month-2",
           title: "Month 2",
           subtitle: "Open-Source Models, Multimodal AI & Fine-Tuning",
-          summary: "Learn local model inference with Ollama/vLLM, multimodal AI (vision, audio), ML foundations, PyTorch, GPU/CUDA, and fine-tuning with LoRA/QLoRA.",
+          summary: "Learn local model inference with Ollama/vLLM, multimodal AI (vision, audio), ML foundations, PyTorch, GPU/CUDA, dataset handling, and fine-tuning with LoRA/QLoRA.",
           nodes: [
             {
               id: "m2-opensource",
@@ -953,7 +1085,8 @@ window.ROADMAP_DATA = {
                 "Multimodal RAG: indexing and retrieving text and images",
                 "Speech-to-text: OpenAI Whisper (open-source, local), Deepgram, AssemblyAI",
                 "Text-to-speech: ElevenLabs, OpenAI TTS, Bark (open-source)",
-                "Voice agents: building conversational systems with real-time voice"
+                "Voice agents: building conversational systems with real-time voice",
+                "A practical niche for your background: incident screenshots, dashboards, PDFs, and meeting transcripts"
               ],
               resources: [
                 {
@@ -1032,6 +1165,49 @@ window.ROADMAP_DATA = {
                   type: "course",
                   cost: "free",
                   note: "Free, practical, top-down approach"
+                }
+              ]
+            },
+            {
+              id: "m2-datasets",
+              type: "topic",
+              title: "Datasets, Labeling & Data Curation",
+              shortTitle: "Datasets & Labeling",
+              description: "A lot of AI engineering work is really data engineering with feedback loops. Learn how to build eval datasets, fine-tuning datasets, labeling guidelines, and high-signal examples from production behavior.",
+              concepts: [
+                "Build small, representative eval datasets before large benchmark sets",
+                "Labeling guidelines: consistency matters more than volume early on",
+                "Turn user failures and edge cases into regression examples",
+                "Separate training, evaluation, and red-team datasets",
+                "Track dataset versions alongside prompts and code"
+              ],
+              resources: [
+                {
+                  id: "openai-evals-guide-m2",
+                  title: "OpenAI Evals Guide",
+                  url: "https://developers.openai.com/api/docs/guides/evals",
+                  type: "article",
+                  cost: "free",
+                  author: "OpenAI",
+                  note: "Strong practical starting point for eval dataset design"
+                },
+                {
+                  id: "langsmith-eval-concepts-m2",
+                  title: "LangSmith — Evaluation Concepts",
+                  url: "https://docs.langchain.com/langsmith/evaluation-concepts",
+                  type: "article",
+                  cost: "free-tier",
+                  author: "LangChain",
+                  note: "Useful once you start collecting real examples and annotating them"
+                },
+                {
+                  id: "hf-datasets-docs",
+                  title: "Hugging Face Datasets Documentation",
+                  url: "https://huggingface.co/docs/datasets/",
+                  type: "article",
+                  cost: "free",
+                  author: "Hugging Face",
+                  note: "Good for dataset versioning, preprocessing, and repeatable evaluation workflows"
                 }
               ]
             },
@@ -1313,7 +1489,8 @@ window.ROADMAP_DATA = {
                 "Batch vs. streaming ingestion: when to re-embed vs. incrementally update",
                 "Handling unstructured data: PDFs, HTML, images, audio at scale",
                 "Data lineage: tracking where your retrieval/training data came from",
-                "Privacy pipelines: PII detection and redaction"
+                "Privacy pipelines: PII detection and redaction",
+                "Build ingestion as a repeatable pipeline, not a one-off notebook"
               ],
               resources: [
                 {
@@ -1346,6 +1523,14 @@ window.ROADMAP_DATA = {
                   url: "https://greatexpectations.io/",
                   type: "tool",
                   cost: "free"
+                },
+                {
+                  id: "presidio",
+                  title: "Microsoft Presidio",
+                  url: "https://microsoft.github.io/presidio/",
+                  type: "tool",
+                  cost: "free",
+                  note: "Useful for PII detection and redaction in AI data pipelines"
                 }
               ]
             },

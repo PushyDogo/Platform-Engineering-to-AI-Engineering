@@ -1,11 +1,13 @@
 // ============================================================
-// ROADMAP DATA — Edit this file to add/update resources
+// ROADMAP DATA — AI Engineer
+// Edit this file to add/update resources
 // To add a resource: find the node by id, add an object to its resources array
 // Resource types: "video" | "article" | "book" | "course" | "tool" | "github"
 // Cost: "free" | "paid" | "free-tier"
 // ============================================================
 
-window.ROADMAP_DATA = {
+window.ROADMAP_DATA_AI = {
+  id: "ai-engineer",
   meta: {
     title: "DevOps → AI Engineer",
     subtitle: "The Complete Transition Roadmap",

@@ -5,12 +5,34 @@
 
 const STORAGE_KEY = 'ai-roadmap-v1';
 const STORAGE_VERSION = 2;
+const CURRENT_ROADMAP_KEY = 'ai-roadmap-current';
 
 // ── State ───────────────────────────────────────────────────
 let appState = {
   selectedNodeId: null,
   userState: loadUserState(),
+  currentRoadmapId: loadCurrentRoadmapId(),
 };
+
+// Bind window.ROADMAP_DATA to the currently-active roadmap
+// All existing code reads ROADMAP_DATA.phases / .meta — this keeps it working unchanged
+function bindCurrentRoadmap() {
+  const found = (window.ROADMAPS || []).find(r => r.id === appState.currentRoadmapId);
+  window.ROADMAP_DATA = found || window.ROADMAPS[0];
+  appState.currentRoadmapId = window.ROADMAP_DATA.id;
+}
+
+function loadCurrentRoadmapId() {
+  try {
+    const id = localStorage.getItem(CURRENT_ROADMAP_KEY);
+    if (id && (window.ROADMAPS || []).some(r => r.id === id)) return id;
+  } catch {}
+  return (window.ROADMAPS && window.ROADMAPS[0] && window.ROADMAPS[0].id) || null;
+}
+
+function saveCurrentRoadmapId(id) {
+  try { localStorage.setItem(CURRENT_ROADMAP_KEY, id); } catch {}
+}
 
 // ── localStorage Helpers ────────────────────────────────────
 function loadUserState() {
@@ -667,10 +689,66 @@ function resetProgress() {
   init();
 }
 
+// ── Roadmap Switching ───────────────────────────────────────
+function switchRoadmap(roadmapId) {
+  if (roadmapId === appState.currentRoadmapId) return;
+  appState.currentRoadmapId = roadmapId;
+  saveCurrentRoadmapId(roadmapId);
+  bindCurrentRoadmap();
+  // Close any open panel — its node belongs to the previous roadmap
+  if (appState.selectedNodeId) closePanel();
+  init();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── Hero Section ────────────────────────────────────────────
+function renderHero() {
+  const meta = window.ROADMAP_DATA.meta;
+  return `
+    <h1 class="text-2xl font-bold text-gray-900 mb-1">${meta.title}</h1>
+    <p class="text-gray-500 text-sm leading-relaxed max-w-2xl">${meta.description}</p>
+    <div class="flex items-center gap-4 mt-4 flex-wrap">
+      <div class="flex items-center gap-1.5 text-xs text-gray-500">
+        <span class="w-3 h-3 rounded-full bg-gray-300 inline-block"></span> Not Started
+      </div>
+      <div class="flex items-center gap-1.5 text-xs text-blue-600">
+        <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span> In Progress
+      </div>
+      <div class="flex items-center gap-1.5 text-xs text-green-600">
+        <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span> Completed
+      </div>
+      <div class="flex items-center gap-1.5 text-xs text-amber-600">
+        <span class="w-3 h-3 rounded border border-amber-400 inline-block"></span> Milestone Project
+      </div>
+    </div>
+  `;
+}
+
 // ── Overall Progress Render ──────────────────────────────────
 function renderTopNav() {
   const allNodes = getAllNodes();
   const { pct, completed, total } = calcProgress(allNodes);
+  const roadmaps = window.ROADMAPS || [];
+  const currentId = appState.currentRoadmapId;
+
+  const tabsHtml = roadmaps.length > 1 ? `
+    <div class="flex gap-1 mt-2 border-t border-gray-200 pt-2 -mx-4 px-4 overflow-x-auto">
+      ${roadmaps.map(r => {
+        const isActive = r.id === currentId;
+        const rNodes = getAllNodesFor(r);
+        const rProg = calcProgress(rNodes);
+        return `<button
+          onclick="switchRoadmap('${r.id}')"
+          class="flex-shrink-0 px-3 py-1.5 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 ${isActive
+            ? 'bg-blue-50 text-blue-700 border border-blue-300'
+            : 'text-gray-600 hover:bg-gray-100 border border-transparent'}"
+        >
+          <span>${r.meta.title}</span>
+          <span class="text-xs ${isActive ? 'text-blue-600' : 'text-gray-400'}">${rProg.completed}/${rProg.total}</span>
+        </button>`;
+      }).join('')}
+    </div>
+  ` : '';
 
   return `
     <div class="flex items-center justify-between gap-4 flex-wrap">
@@ -699,7 +777,25 @@ function renderTopNav() {
       </div>
       <button onclick="resetProgress()" class="text-xs text-gray-400 hover:text-gray-700 transition-colors px-2 py-1 rounded border border-gray-200 hover:border-gray-400">Reset</button>
     </div>
+    ${tabsHtml}
   `;
+}
+
+// Helper: get all nodes for an arbitrary roadmap (not just the current one)
+function getAllNodesFor(roadmap) {
+  const nodes = [];
+  for (const phase of (roadmap.phases || [])) {
+    if (phase.granularity === 'week') {
+      for (const week of (phase.weeks || [])) {
+        for (const node of week.nodes) nodes.push(node);
+      }
+    } else {
+      for (const month of (phase.months || [])) {
+        for (const node of month.nodes) nodes.push(node);
+      }
+    }
+  }
+  return nodes;
 }
 
 // ── Keyboard Navigation ──────────────────────────────────────
@@ -709,8 +805,14 @@ document.addEventListener('keydown', (e) => {
 
 // ── Init ─────────────────────────────────────────────────────
 function init() {
+  bindCurrentRoadmap();
+
   // Render nav
   document.getElementById('top-nav').innerHTML = renderTopNav();
+
+  // Render hero (reflects the active roadmap's meta)
+  const heroEl = document.getElementById('hero');
+  if (heroEl) heroEl.innerHTML = renderHero();
 
   // Render all phases
   const roadmapContainer = document.getElementById('roadmap-container');

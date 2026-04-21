@@ -72,28 +72,8 @@
 
     <!-- Roadmap Column -->
     <main class="flex-1 px-4 py-8 min-w-0 transition-all duration-300" id="main-content">
-      <!-- Hero Section -->
-      <div class="mb-8">
-        <h1 class="text-2xl font-bold text-gray-900 mb-1">DevOps → AI Engineer</h1>
-        <p class="text-gray-500 text-sm leading-relaxed max-w-2xl">
-          Your structured path from Platform/DevOps Engineer to AI Engineer. Click any node to view resources, track progress, and add personal notes.
-          All progress is saved locally in your browser.
-        </p>
-        <div class="flex items-center gap-4 mt-4 flex-wrap">
-          <div class="flex items-center gap-1.5 text-xs text-gray-500">
-            <span class="w-3 h-3 rounded-full bg-gray-300 inline-block"></span> Not Started
-          </div>
-          <div class="flex items-center gap-1.5 text-xs text-blue-600">
-            <span class="w-3 h-3 rounded-full bg-blue-500 inline-block"></span> In Progress
-          </div>
-          <div class="flex items-center gap-1.5 text-xs text-green-600">
-            <span class="w-3 h-3 rounded-full bg-green-500 inline-block"></span> Completed
-          </div>
-          <div class="flex items-center gap-1.5 text-xs text-amber-600">
-            <span class="w-3 h-3 rounded border border-amber-400 inline-block"></span> Milestone Project
-          </div>
-        </div>
-      </div>
+      <!-- Hero Section — rendered by app.js so it reflects the active roadmap -->
+      <div id="hero" class="mb-8"></div>
 
       <!-- Roadmap Phases — rendered by app.js -->
       <div id="roadmap-container">
@@ -136,6 +116,11 @@
 
   <!-- Data and App scripts -->
   <script src="data.js"></script>
+  <script src="data-senior-devops.js"></script>
+  <script>
+    // Register all roadmaps here in display order (becomes the tab order)
+    window.ROADMAPS = [window.ROADMAP_DATA_AI, window.ROADMAP_DATA_DEVOPS];
+  </script>
   <script src="app.js"></script>
 
   <!-- Mobile panel backdrop toggle -->

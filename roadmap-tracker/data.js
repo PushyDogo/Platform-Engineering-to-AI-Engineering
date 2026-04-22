@@ -1,5 +1,5 @@
 // ============================================================
-// ROADMAP DATA — AI Engineer
+// ROADMAP DATA — AI Engineering
 // Edit this file to add/update resources
 // To add a resource: find the node by id, add an object to its resources array
 // Resource types: "video" | "article" | "book" | "course" | "tool" | "github"
@@ -9,20 +9,20 @@
 window.ROADMAP_DATA_AI = {
   id: "ai-engineer",
   meta: {
-    title: "DevOps → AI Engineer",
-    subtitle: "The Complete Transition Roadmap",
-    description: "Your path from DevOps Engineer to AI Engineer. Job-ready in ~1 month, with stronger foundations in evaluation, backend systems, retrieval quality, security, and LLMOps.",
-    version: "1.1"
+    title: "AI Engineering",
+    subtitle: "Practical Roadmap",
+    description: "Practical AI engineering roadmap focused on the skills current roles screen for first: Python/backend engineering, RAG, evaluation, observability, safe tool use, and cloud deployment. Includes a 30-day core plan plus continued depth.",
+    version: "1.2"
   },
   phases: [
     // ========================================================
-    // PHASE 1: 30-DAY CRASH COURSE
+    // PHASE 1: 30-DAY CORE PLAN
     // ========================================================
     {
       id: "phase-1",
       title: "Phase 1",
-      subtitle: "30-Day Crash Course",
-      description: "A focused, intensive sprint to get you job-ready. Build portfolio projects, learn the core AI engineering stack, and interview confidently.",
+      subtitle: "30-Day Core Plan",
+      description: "A focused sprint through the core skills most AI engineering roles expect first: backend Python, RAG, evals, safe tooling, observability, deployment, and portfolio-ready projects.",
       granularity: "week",
       weeks: [
         // -------------------------------------------------
@@ -246,7 +246,7 @@ window.ROADMAP_DATA_AI = {
             {
               id: "w1-day6-7",
               type: "day",
-              title: "Day 6–7: Python AI Ecosystem, FastAPI & LLM APIs",
+              title: "Day 6–7: Python AI Ecosystem, FastAPI, Docker & LLM APIs",
               shortTitle: "Python, FastAPI & APIs",
               dayLabel: "Day 6–7",
               description: "You likely know Python basics from DevOps scripting. Now connect that to production AI app development: provider SDKs, async Python, FastAPI endpoints, streaming responses, retries, and simple stateful infrastructure.",
@@ -256,12 +256,14 @@ window.ROADMAP_DATA_AI = {
                 "Google Gemini API",
                 "FastAPI basics: request/response models, validation, dependency injection",
                 "Async Python fundamentals: asyncio, concurrency, non-blocking API calls",
+                "Docker basics: containerize your app and standardize local-to-cloud deployment",
                 "Handling streaming responses",
                 "Token counting and cost estimation",
                 "Error handling, retries, and rate limiting",
                 "Using pydantic for structured outputs",
                 "Designing a thin application layer: env vars, config, logging, and provider abstraction",
-                "When to add Postgres/pgvector and Redis to an AI app"
+                "When to add Postgres/pgvector and Redis to an AI app",
+                "Pick one simple deployment path early: Cloud Run, Render, Fly.io, or your preferred cloud container service"
               ],
               resources: [
                 {
@@ -344,6 +346,24 @@ window.ROADMAP_DATA_AI = {
                   cost: "free",
                   author: "Celery",
                   note: "Good background-job model for ingestion and async processing"
+                },
+                {
+                  id: "docker-docs",
+                  title: "Docker Documentation",
+                  url: "https://docs.docker.com/",
+                  type: "article",
+                  cost: "free",
+                  author: "Docker",
+                  note: "Container basics are still a core AI engineering skill in production"
+                },
+                {
+                  id: "cloud-run-quickstart",
+                  title: "Google Cloud Run — Deploy Container Quickstart",
+                  url: "https://cloud.google.com/run/docs/quickstarts/deploy-container",
+                  type: "article",
+                  cost: "free-tier",
+                  author: "Google Cloud",
+                  note: "A fast path to deploying a containerized AI service"
                 }
               ]
             },
@@ -591,26 +611,28 @@ window.ROADMAP_DATA_AI = {
         {
           id: "week-3",
           title: "Week 3",
-          subtitle: "AI Agents, MCP & Safe Tooling",
+          subtitle: "Agentic Workflows, Safe Tooling & Deployment",
           days: "Days 15–21",
-          goal: "Build autonomous AI agents that can use tools, plan multi-step tasks, and interact with external systems",
+          goal: "Build production-shaped agentic workflows with safe tool use, state management, tracing, and cloud deployment",
           nodes: [
             {
               id: "w3-day15-16",
               type: "day",
-              title: "Day 15–16: Agent Fundamentals",
-              shortTitle: "Agent Fundamentals",
+              title: "Day 15–16: Tool Calling, Workflows & Guardrails",
+              shortTitle: "Tool Calling & Guardrails",
               dayLabel: "Day 15–16",
-              description: "Understand what an AI agent is: a system that can plan, use tools, and make decisions based on intermediate results. Focus on tool schemas, safe execution, approval gates, and durable state rather than hype.",
+              description: "Start with the practical core of modern agentic systems: tool calling, structured schemas, safe execution, approval flows, and stateful workflows. This is what current AI Engineer job descriptions are actually screening for.",
               concepts: [
-                "What an agent is: plan, use tools, make decisions based on results",
+                "What an agentic workflow is: a stateful application that combines model calls, tools, and decision steps",
+                "Tool/function calling: strongly typed tool inputs, schema validation, retries, fallbacks",
+                "Structured outputs and tool selection under failure",
                 "The ReAct loop: Reason → Act → Observe → Repeat",
                 "Tool/function calling: how LLMs invoke external functions",
-                "Memory: short-term (conversation history), long-term (vector store)",
-                "Planning strategies: single-step, multi-step, tree-of-thought",
+                "Memory: short-term state, retrieval-backed memory, and when not to persist anything",
+                "Planning strategies: single-step, multi-step, deterministic workflow orchestration",
                 "Guardrails: preventing agents from taking destructive actions",
                 "Approval gates for any side-effecting operation",
-                "Tool design: idempotency, timeouts, retries, and typed inputs"
+                "Tool design: idempotency, timeouts, retries, typed inputs, and auditability"
               ],
               resources: [
                 {
@@ -636,21 +658,41 @@ window.ROADMAP_DATA_AI = {
                   type: "article",
                   cost: "free",
                   note: "The leading agent framework in 2026"
+                },
+                {
+                  id: "openai-responses-migration",
+                  title: "OpenAI — Migrate to the Responses API",
+                  url: "https://developers.openai.com/api/docs/guides/migrate-to-responses",
+                  type: "article",
+                  cost: "free",
+                  author: "OpenAI",
+                  note: "Current OpenAI guidance for new LLM applications and agentic primitives"
+                },
+                {
+                  id: "openai-tools-guide",
+                  title: "OpenAI — Using Tools",
+                  url: "https://platform.openai.com/docs/guides/tools?api-mode=responses",
+                  type: "article",
+                  cost: "free",
+                  author: "OpenAI",
+                  note: "Official reference for tool use, built-in tools, and remote MCP support"
                 }
               ]
             },
             {
               id: "w3-day17-18",
               type: "day",
-              title: "Day 17–18: Agent Frameworks",
-              shortTitle: "Agent Frameworks",
+              title: "Day 17–18: Stateful Orchestration & Agent Frameworks",
+              shortTitle: "Orchestration & Frameworks",
               dayLabel: "Day 17–18",
-              description: "Pick one primary framework and one secondary framework. Go deep enough to build one robust agent system instead of skimming five ecosystems.",
+              description: "Pick one primary framework and one secondary option. The real objective is not framework trivia; it is building a workflow you can debug, test, deploy, and improve.",
               concepts: [
                 "Primary recommendation: LangGraph for durable state, conditional routing, and human-in-the-loop workflows",
                 "Secondary option: OpenAI Agents SDK for fast prototyping and handoffs, or CrewAI if you specifically want role-based multi-agent patterns",
                 "Avoid framework-driven design; start from workflow and failure modes",
-                "When to use which: LangGraph for complex workflows, SDK for speed, CrewAI for explicit agent roles"
+                "When to use which: LangGraph for complex workflows, SDK for speed, CrewAI for explicit agent roles",
+                "Tracing every tool call and workflow branch so failures are debuggable",
+                "Prefer one robust agent over a premature multi-agent system"
               ],
               resources: [
                 {
@@ -678,6 +720,15 @@ window.ROADMAP_DATA_AI = {
                   author: "OpenAI"
                 },
                 {
+                  id: "openai-agent-evals",
+                  title: "OpenAI — Evaluate Agent Workflows",
+                  url: "https://developers.openai.com/api/docs/guides/agent-evals",
+                  type: "article",
+                  cost: "free",
+                  author: "OpenAI",
+                  note: "Useful for building a real improvement loop instead of vibe-checking agents"
+                },
+                {
                   id: "matt-berman-yt",
                   title: "Matt Berman YouTube Channel",
                   url: "https://www.youtube.com/@matthew_berman",
@@ -698,68 +749,80 @@ window.ROADMAP_DATA_AI = {
             {
               id: "w3-day19",
               type: "day",
-              title: "Day 19: Model Context Protocol (MCP)",
-              shortTitle: "Model Context Protocol",
+              title: "Day 19: State, Auth, Queues & Persistence for AI Apps",
+              shortTitle: "State, Auth & Persistence",
               dayLabel: "Day 19",
-              description: "MCP is the standard for connecting AI agents to external tools and data sources. Think of it as \"the USB-C of AI tool integration.\" Build once, connect to any AI framework.",
+              description: "Most AI engineer interviews and real projects care more about shipping a reliable service than about protocol trivia. Learn the application patterns that make agents usable in production: auth, persistence, queues, and auditability.",
               concepts: [
-                "What MCP is: a protocol for AI models to discover and use external tools",
-                "MCP servers and clients",
-                "Transport mechanisms (stdio, HTTP SSE)",
-                "Tool discovery and schema",
-                "Why it matters: build once, connect to many clients and agent runtimes",
-                "Design stable tool contracts and avoid leaking unsafe capabilities by default"
+                "Authentication basics for AI apps: API keys, user auth, service-to-service auth",
+                "Per-user state and conversation persistence in Postgres or a document store",
+                "Redis and queues for background ingestion, summarization, and tool work",
+                "Audit logs and approval records for side-effecting actions",
+                "Rate limiting, quotas, and per-user cost controls",
+                "Use webhooks/background jobs when work exceeds request time budgets"
               ],
               resources: [
                 {
-                  id: "mcp-docs",
-                  title: "Anthropic MCP Documentation",
-                  url: "https://modelcontextprotocol.io/",
+                  id: "fastapi-security",
+                  title: "FastAPI Security",
+                  url: "https://fastapi.tiangolo.com/tutorial/security/",
                   type: "article",
                   cost: "free",
-                  author: "Anthropic",
-                  note: "The official spec"
+                  author: "FastAPI",
+                  note: "Good practical baseline for auth in Python services"
                 },
                 {
-                  id: "mcp-github",
-                  title: "MCP GitHub Repository",
-                  url: "https://github.com/modelcontextprotocol",
-                  type: "github",
+                  id: "github-actions-basics",
+                  title: "GitHub Actions Documentation",
+                  url: "https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions",
+                  type: "article",
                   cost: "free",
-                  note: "Reference implementations"
+                  author: "GitHub",
+                  note: "Use CI to run tests, evals, and deployments consistently"
                 }
               ]
             },
             {
               id: "w3-day20-21",
               type: "day",
-              title: "Day 20–21: Optional Visual Automation Tools",
-              shortTitle: "Optional Visual Tools",
+              title: "Day 20–21: Deployment, Tracing & Release Workflow",
+              shortTitle: "Deployment & Tracing",
               dayLabel: "Day 20–21",
-              description: "Learn the visual/low-code AI workflow tools only as an optional acceleration layer. They are useful for demos, internal automation, and quick experiments, but should not replace understanding the core code path.",
+              description: "Ship your AI app like a service. Add tracing, basic online monitoring, automated checks, and deploy your container to one cloud path so your portfolio projects feel production-shaped.",
               concepts: [
-                "n8n: open-source workflow automation with AI nodes",
-                "LangFlow: visual LangChain builder",
-                "Flowise: drag-and-drop LLM app builder",
-                "When to use visual tools vs. code",
-                "Use these after you can already build the same flow in code"
+                "Trace every model call, tool call, and latency bottleneck",
+                "CI flow: tests, evals, prompt regression checks, container build, deployment",
+                "Ship one deployment path end to end using Docker + Cloud Run or your preferred equivalent",
+                "Set up online monitoring for cost, latency, error rate, and tool failures",
+                "Add feedback capture so failures turn into new eval cases"
               ],
               resources: [
                 {
-                  id: "n8n-docs",
-                  title: "n8n Documentation",
-                  url: "https://docs.n8n.io/",
+                  id: "langsmith-observability",
+                  title: "LangSmith Observability",
+                  url: "https://docs.langchain.com/langsmith/observability",
                   type: "article",
-                  cost: "free",
-                  note: "Especially the AI nodes"
+                  cost: "free-tier",
+                  author: "LangChain",
+                  note: "Framework-agnostic tracing, monitoring, and debugging for LLM apps"
                 },
                 {
-                  id: "n8n-yt",
-                  title: "n8n YouTube Channel",
-                  url: "https://www.youtube.com/@n8n-io",
-                  type: "video",
+                  id: "openai-eval-best-practices",
+                  title: "OpenAI — Evaluation Best Practices",
+                  url: "https://developers.openai.com/api/docs/guides/evaluation-best-practices",
+                  type: "article",
                   cost: "free",
-                  note: "Workflow tutorials"
+                  author: "OpenAI",
+                  note: "Current guidance for designing evals that are actually useful in production"
+                },
+                {
+                  id: "cloud-run-deploying",
+                  title: "Google Cloud Run — Deploying Container Images",
+                  url: "https://cloud.google.com/run/docs/deploying",
+                  type: "article",
+                  cost: "free-tier",
+                  author: "Google Cloud",
+                  note: "A practical deployment target for portfolio AI services"
                 }
               ]
             },
@@ -771,7 +834,7 @@ window.ROADMAP_DATA_AI = {
               dayLabel: "Days 15–21",
               isProject: true,
               projectNumber: 3,
-              description: "Extend your earlier projects into a single DevOps copilot platform with retrieval, tools, approval gates, and MCP exposure. This should look like a production internal assistant rather than a generic autonomous agent demo.",
+              description: "Extend your earlier projects into a single DevOps copilot platform with retrieval, tools, approval gates, tracing, and deployment. This should look like a production internal assistant rather than a generic autonomous agent demo.",
               concepts: [
                 "Can query cloud APIs (AWS/GCP status, instance info)",
                 "Can search through logs and documentation (using your RAG system)",
@@ -780,8 +843,9 @@ window.ROADMAP_DATA_AI = {
                 "Has memory across conversations",
                 "Guardrails: cannot delete resources, requires confirmation for changes",
                 "Built primarily with LangGraph; add one secondary framework only if it adds clear value",
-                "Expose via MCP server",
+                "Expose as a FastAPI service and deploy it",
                 "Add audit logs, role boundaries, and clear tool approval UX",
+                "Add tracing, cost logging, and feedback capture",
                 "Show end-to-end architecture from API layer to retrieval to tool execution"
               ],
               resources: []
@@ -1415,7 +1479,9 @@ window.ROADMAP_DATA_AI = {
                 "Self-reflection: agents that evaluate and correct their own output",
                 "Human-in-the-loop: approval gates, feedback loops",
                 "Agent evaluation: measuring if an agent is actually good",
-                "Multi-agent patterns: supervisor, debate, consensus, assembly line"
+                "Multi-agent patterns: supervisor, debate, consensus, assembly line",
+                "Model Context Protocol (MCP): when interoperable tool contracts are worth the added complexity",
+                "Remote MCP servers and cross-client tool reuse as a post-30-day skill"
               ],
               resources: [
                 {
@@ -1446,6 +1512,14 @@ window.ROADMAP_DATA_AI = {
                   type: "article",
                   cost: "free",
                   author: "Anthropic"
+                },
+                {
+                  id: "mcp-docs-m3",
+                  title: "Model Context Protocol",
+                  url: "https://modelcontextprotocol.io/",
+                  type: "article",
+                  cost: "free",
+                  note: "Move this later unless your immediate project specifically needs cross-client tool interoperability"
                 }
               ]
             },

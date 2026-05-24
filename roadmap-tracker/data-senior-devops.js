@@ -1,2362 +1,1501 @@
 // ============================================================
-// ROADMAP DATA — MLOps Engineering
-// Node IDs prefixed with "do-" to avoid collision with the AI Engineering roadmap
+// ROADMAP DATA - MLOps Engineering
+// Reworked from local JDs in /JDs for fast interview readiness.
+// Node IDs are prefixed with "mlops-" to avoid collisions.
 // ============================================================
 
 window.ROADMAP_DATA_DEVOPS = {
   id: "senior-devops-mlops",
   meta: {
     title: "MLOps Engineering",
-    subtitle: "Platform & Production ML Roadmap",
-    description: "Practical MLOps engineering roadmap covering Kubernetes, IaC/GitOps, observability/SRE, platform engineering, and production ML/LLM infrastructure. The first 30 days are narrowed to the skills current senior roles screen for most often.",
-    version: "1.1"
+    subtitle: "Interview Readiness Roadmap",
+    description: "A JD-driven MLOps and AI infrastructure sprint focused on Python services, ML pipelines, Kubernetes, GPU workloads, Ray/KubeRay, MLflow/Kubeflow, model serving, LLMOps, observability, cloud security, and interview practice.",
+    version: "2.0"
   },
   phases: [
-    // ========================================================
-    // PHASE 1: 30-DAY ADVANCED PLAN
-    // ========================================================
     {
-      id: "do-phase-1",
+      id: "mlops-phase-1",
       title: "Phase 1",
-      subtitle: "30-Day Core Plan",
-      description: "A focused, senior-level sprint across the four pillars companies are actually hiring for today: Kubernetes/platform engineering, IaC/GitOps delivery, observability/SRE, and production MLOps/LLMOps. Nice-to-haves and interview extension topics are pushed after the first 30 days.",
+      subtitle: "30-Day Interview Sprint",
+      description: "Prioritize the skills that appeared repeatedly in the JDs: production Python, Docker/Kubernetes, ML lifecycle tooling, GPU scheduling, distributed training, model serving, async inference, observability, CI/CD, IaC, and cloud security.",
       granularity: "week",
       weeks: [
-        // -------------------------------------------------
-        // WEEK 1: Kubernetes & Cloud-Native Mastery
-        // -------------------------------------------------
         {
-          id: "do-week-1",
+          id: "mlops-week-1",
           title: "Week 1",
-          subtitle: "Kubernetes & Cloud-Native Mastery",
-          days: "Days 1–7",
-          goal: "Understand Kubernetes internals deeply, master scheduling/security/networking, and know how to run K8s at scale cost-effectively",
+          subtitle: "Production MLOps Foundations",
+          days: "Days 1-7",
+          goal: "Build the core mental model interviewers expect: ML lifecycle, Python service quality, Docker, Kubernetes basics, CI/CD, MLflow, and pipeline debugging.",
           nodes: [
             {
-              id: "do-w1-day1-2",
+              id: "mlops-w1-day1",
               type: "day",
-              title: "Day 1–2: Kubernetes Architecture Deep Dive",
-              shortTitle: "K8s Architecture",
-              dayLabel: "Day 1–2",
-              description: "Go beyond 'I can write a Deployment YAML.' Understand how the control plane, nodes, networking, and storage truly work — this is interview table-stakes for senior roles and foundation for everything that follows.",
+              title: "Day 1: JD Map, ML Lifecycle & Interview Baseline",
+              shortTitle: "JD Map & ML Lifecycle",
+              dayLabel: "Day 1",
+              description: "Convert the JDs into a concrete skill map and refresh the end-to-end ML lifecycle: data ingestion, feature engineering, training, evaluation, registry, deployment, monitoring, drift, and retraining.",
               concepts: [
-                "Control plane: kube-apiserver, etcd, kube-scheduler, kube-controller-manager, cloud-controller-manager",
-                "Node components: kubelet, kube-proxy, container runtime (containerd, CRI-O)",
-                "The reconciliation loop — the heart of Kubernetes",
-                "etcd: the consistent key-value store, quorum, Raft consensus",
-                "CNI (Container Network Interface): Calico, Cilium, Flannel — how pod networking actually works",
-                "CRI (Container Runtime Interface) and CSI (Container Storage Interface)",
-                "Why kubectl is just an HTTP client for the API server",
-                "Watch API, informers, list/watch pattern"
+                "MLOps role boundaries: data scientist vs ML engineer vs platform engineer vs AI infrastructure engineer",
+                "End-to-end ML lifecycle: data, training, evaluation, registry, serving, monitoring, retraining",
+                "Batch vs real-time inference and when each is used",
+                "Model artifacts, datasets, environments, configs, metrics, and lineage",
+                "Common failure path: data quality issue becomes model quality issue becomes production incident",
+                "Interview framing: explain systems in terms of reliability, latency, cost, and rollback"
               ],
+              practicePrompt: "Create a one-page skill matrix from the JDs: must-have, useful, and post-interview depth. Mark your current confidence from 1-5 for each skill.",
+              assignment: {
+                title: "Draw the production ML system",
+                time: "45-60 min",
+                objective: "Sketch a system that trains a model, registers it, deploys real-time inference, runs batch inference, and monitors drift.",
+                steps: [
+                  "Draw the data path, training path, serving path, and monitoring path.",
+                  "Add failure points: schema change, bad model, slow inference, GPU pressure, bad deployment.",
+                  "Write a 2-minute explanation you can say in an interview."
+                ],
+                pitfalls: [
+                  "Interviewers often ask where validation happens. Do not put all validation after training.",
+                  "Be ready to explain rollback: previous model version, previous image, previous feature pipeline, or traffic shift.",
+                  "A strong answer separates model metrics from system metrics."
+                ]
+              },
               resources: [
                 {
-                  id: "kthw",
-                  title: "Kubernetes the Hard Way",
-                  url: "https://github.com/kelseyhightower/kubernetes-the-hard-way",
-                  type: "github",
-                  cost: "free",
-                  author: "Kelsey Hightower",
-                  note: "The definitive way to understand K8s components — set up a cluster from scratch without automation"
+                  id: "mlops-ml-system-design",
+                  title: "Designing Machine Learning Systems",
+                  url: "https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/",
+                  type: "book",
+                  cost: "paid",
+                  author: "Chip Huyen"
                 },
                 {
-                  id: "k8s-components-docs",
-                  title: "Kubernetes Components (official docs)",
-                  url: "https://kubernetes.io/docs/concepts/overview/components/",
+                  id: "mlops-google-rules",
+                  title: "Rules of Machine Learning",
+                  url: "https://developers.google.com/machine-learning/guides/rules-of-ml",
+                  type: "article",
+                  cost: "free",
+                  author: "Google"
+                }
+              ]
+            },
+            {
+              id: "mlops-w1-day2",
+              type: "day",
+              title: "Day 2: Production Python, FastAPI & Async Inference",
+              shortTitle: "Python, FastAPI & Async",
+              dayLabel: "Day 2",
+              description: "The JDs repeatedly expect strong Python, FastAPI, async patterns, and backend services around ML systems. Focus on clean interfaces, concurrency, retries, timeouts, and operational behavior.",
+              concepts: [
+                "Production Python structure: modules, config, logging, typing, tests",
+                "FastAPI request/response models with Pydantic",
+                "asyncio basics for non-blocking inference and IO",
+                "Timeouts, retries, circuit breakers, and graceful degradation",
+                "Background jobs for slow work: queues, workers, and idempotency",
+                "API contracts for model inference: request schema, response schema, error schema"
+              ],
+              practicePrompt: "Explain when an inference endpoint should be synchronous, asynchronous, or queue-backed.",
+              assignment: {
+                title: "Build a small inference API",
+                time: "90 min",
+                objective: "Create a FastAPI endpoint that loads a fake model, validates input, returns predictions, logs latency, and handles timeout/error cases.",
+                steps: [
+                  "Use Pydantic models for request and response.",
+                  "Add structured logs with request id, latency, and model version.",
+                  "Add one async endpoint and one background-job style function.",
+                  "Write three tests: valid request, bad schema, model failure."
+                ],
+                pitfalls: [
+                  "Interviewers may ask what happens when model loading is slow. Load at startup or use a lifecycle hook.",
+                  "Do not block the event loop with CPU-heavy work inside async handlers.",
+                  "Always make model version visible in responses and logs."
+                ]
+              },
+              resources: [
+                {
+                  id: "mlops-fastapi",
+                  title: "FastAPI Documentation",
+                  url: "https://fastapi.tiangolo.com/",
+                  type: "article",
+                  cost: "free",
+                  author: "FastAPI"
+                },
+                {
+                  id: "mlops-pydantic",
+                  title: "Pydantic Documentation",
+                  url: "https://docs.pydantic.dev/latest/",
+                  type: "article",
+                  cost: "free",
+                  author: "Pydantic"
+                },
+                {
+                  id: "mlops-python-asyncio",
+                  title: "asyncio - Python Documentation",
+                  url: "https://docs.python.org/3/library/asyncio.html",
+                  type: "article",
+                  cost: "free",
+                  author: "Python"
+                }
+              ]
+            },
+            {
+              id: "mlops-w1-day3",
+              type: "day",
+              title: "Day 3: Docker, Images & Reproducible Runtime",
+              shortTitle: "Docker & Runtime",
+              dayLabel: "Day 3",
+              description: "Containerization appears in every JD. Learn how ML containers differ from normal backend containers: large artifacts, CUDA images, model cache, startup time, and environment reproducibility.",
+              concepts: [
+                "Dockerfile basics: base image, layers, build context, cache, entrypoint",
+                "CPU vs CUDA images and why driver/runtime compatibility matters",
+                "Model artifact handling: bake into image vs download on startup vs mount from object storage",
+                "Image size, cold start, dependency pinning, and vulnerability scanning",
+                "Reproducibility: requirements lock, image tags, dataset version, model version",
+                "Common issue: works locally but fails in cluster due to missing runtime, env vars, or permissions"
+              ],
+              practicePrompt: "Explain why `latest` tags are dangerous in model-serving deployments.",
+              assignment: {
+                title: "Containerize the inference API",
+                time: "60-90 min",
+                objective: "Build a Docker image for the Day 2 API with health checks and environment-driven configuration.",
+                steps: [
+                  "Create a slim CPU image first.",
+                  "Add `/healthz` and `/readyz` endpoints.",
+                  "Run the container locally with an environment variable for model version.",
+                  "Document image size and startup time."
+                ],
+                pitfalls: [
+                  "Interviewers ask about readiness vs liveness. Readiness should fail when the model is not loaded.",
+                  "Do not put secrets in Docker images.",
+                  "For GPU images, know the difference between NVIDIA driver on host and CUDA runtime in container."
+                ]
+              },
+              resources: [
+                {
+                  id: "mlops-docker",
+                  title: "Docker Documentation",
+                  url: "https://docs.docker.com/",
+                  type: "article",
+                  cost: "free",
+                  author: "Docker"
+                },
+                {
+                  id: "mlops-nvidia-container-toolkit",
+                  title: "NVIDIA Container Toolkit",
+                  url: "https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/index.html",
+                  type: "article",
+                  cost: "free",
+                  author: "NVIDIA"
+                }
+              ]
+            },
+            {
+              id: "mlops-w1-day4",
+              type: "day",
+              title: "Day 4: Kubernetes for ML Workloads",
+              shortTitle: "Kubernetes for ML",
+              dayLabel: "Day 4",
+              description: "Refresh Kubernetes through the MLOps lens: Deployments, Jobs, CronJobs, Services, ConfigMaps, Secrets, probes, requests/limits, and debugging failed workloads.",
+              concepts: [
+                "Deployment vs Job vs CronJob for serving, training, and batch inference",
+                "Requests and limits for CPU, memory, ephemeral storage, and GPU",
+                "ConfigMaps, Secrets, ServiceAccounts, RBAC, and image pull secrets",
+                "Probes: startup, readiness, and liveness for model services",
+                "Debugging: describe, logs, events, exec, resource pressure, CrashLoopBackOff, ImagePullBackOff",
+                "Horizontal Pod Autoscaler basics and why GPU autoscaling is harder"
+              ],
+              practicePrompt: "Prepare a 90-second answer for: 'A model-serving pod is CrashLoopBackOff. How do you debug it?'",
+              assignment: {
+                title: "Deploy the inference API to Kubernetes",
+                time: "90 min",
+                objective: "Run your container on kind/minikube with a Deployment, Service, probes, resource requests, and config.",
+                steps: [
+                  "Create Deployment, Service, ConfigMap, and Secret manifests.",
+                  "Add resource requests and readiness/liveness probes.",
+                  "Break the image tag and practice debugging ImagePullBackOff.",
+                  "Break the readiness endpoint and observe service routing behavior."
+                ],
+                pitfalls: [
+                  "A pod can be running but not ready. Interviewers expect you to know the difference.",
+                  "OOMKilled often means memory limit, not just an application bug.",
+                  "A model may require longer startup probes than a normal web service."
+                ]
+              },
+              resources: [
+                {
+                  id: "mlops-k8s-workloads",
+                  title: "Kubernetes Workloads",
+                  url: "https://kubernetes.io/docs/concepts/workloads/",
                   type: "article",
                   cost: "free",
                   author: "Kubernetes"
                 },
                 {
-                  id: "programming-k8s",
-                  title: "Programming Kubernetes",
-                  url: "https://www.oreilly.com/library/view/programming-kubernetes/9781492047094/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Michael Hausenblas & Stefan Schimanski",
-                  note: "The internals book — informers, client-go, controller patterns"
-                },
-                {
-                  id: "tgik",
-                  title: "TGIK — VMware weekly K8s deep dives",
-                  url: "https://www.youtube.com/playlist?list=PL7bmigfV0EqQzxcNpmcdTJ9eFRPBe-iZa",
-                  type: "video",
-                  cost: "free",
-                  author: "Joe Beda & team",
-                  note: "Long-form deep dives by a K8s co-creator"
-                },
-                {
-                  id: "etcd-docs",
-                  title: "etcd — Learning section",
-                  url: "https://etcd.io/docs/latest/learning/",
+                  id: "mlops-k8s-debug",
+                  title: "Debug Pods",
+                  url: "https://kubernetes.io/docs/tasks/debug/debug-application/debug-pods/",
                   type: "article",
                   cost: "free",
-                  note: "Understand Raft, WAL, quorum — asked in every senior interview"
-                }
-              ],
-              practicePrompt: "Draw the K8s architecture from memory — control plane, nodes, what flows through the API server when you `kubectl apply -f deploy.yaml`. Then bootstrap a cluster with kubeadm without any Helm charts or managed services."
-            },
-            {
-              id: "do-w1-day3-4",
-              type: "day",
-              title: "Day 3–4: Advanced Workloads, Scheduling & Autoscaling",
-              shortTitle: "Workloads & Scheduling",
-              dayLabel: "Day 3–4",
-              description: "Master the scheduling and autoscaling primitives that separate junior K8s users from senior operators. This is where cost, reliability, and performance are decided.",
-              concepts: [
-                "Pod scheduling: nodeAffinity, podAffinity/antiAffinity, taints & tolerations, topology spread constraints",
-                "Workload types: Deployment, StatefulSet, DaemonSet, Job, CronJob — when to use which",
-                "Resource requests/limits, QoS classes (Guaranteed/Burstable/BestEffort)",
-                "Horizontal Pod Autoscaler (HPA) — CPU, memory, custom metrics via Prometheus Adapter",
-                "Vertical Pod Autoscaler (VPA) — updater, recommender, admission controller",
-                "KEDA — event-driven autoscaling from Kafka, SQS, Prometheus, cron",
-                "Cluster Autoscaler vs Karpenter — node provisioning strategies",
-                "Pod Disruption Budgets and graceful node drains"
-              ],
-              resources: [
-                {
-                  id: "k8s-patterns-book",
-                  title: "Kubernetes Patterns",
-                  url: "https://www.redhat.com/en/engage/kubernetes-containers-architecture-s-201910240918",
-                  type: "book",
-                  cost: "free",
-                  author: "Bilgin Ibryam & Roland Huß",
-                  note: "Free from Red Hat — the canonical pattern catalog"
-                },
-                {
-                  id: "keda-docs",
-                  title: "KEDA Documentation",
-                  url: "https://keda.sh/docs/latest/",
-                  type: "article",
-                  cost: "free",
-                  note: "Event-driven autoscaling for K8s"
-                },
-                {
-                  id: "karpenter",
-                  title: "Karpenter — Node Provisioning",
-                  url: "https://karpenter.sh/",
-                  type: "tool",
-                  cost: "free",
-                  author: "AWS / CNCF",
-                  note: "Faster, more flexible than Cluster Autoscaler"
-                },
-                {
-                  id: "k8s-resource-management",
-                  title: "Managing Resources for Containers (K8s docs)",
-                  url: "https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/",
-                  type: "article",
-                  cost: "free"
+                  author: "Kubernetes"
                 }
               ]
             },
             {
-              id: "do-w1-day5",
+              id: "mlops-w1-day5",
               type: "day",
-              title: "Day 5: Kubernetes Security, RBAC & Admission Control",
-              shortTitle: "K8s Security & RBAC",
+              title: "Day 5: MLflow, Model Registry & Experiment Tracking",
+              shortTitle: "MLflow & Registry",
               dayLabel: "Day 5",
-              description: "Lock down clusters properly. RBAC, Pod Security Standards, admission webhooks, and runtime security — the controls every senior must be able to design and audit.",
+              description: "MLflow or equivalent appears across the JDs. Learn how experiment tracking, model registry, artifact storage, and promotion workflows connect to deployment.",
               concepts: [
-                "RBAC: Roles, ClusterRoles, RoleBindings, ServiceAccounts, least-privilege design",
-                "Pod Security Standards (Restricted / Baseline / Privileged) — replacement for PSPs",
-                "Admission controllers: mutating vs validating webhooks, order of execution",
-                "Policy engines: OPA/Gatekeeper vs Kyverno — tradeoffs",
-                "Network Policies — default deny, namespace isolation, egress controls",
-                "Secrets: External Secrets Operator, SOPS, sealed-secrets, CSI secret drivers",
-                "Image security: Trivy/Grype scanning, cosign signing, admission-time enforcement",
-                "Runtime security: Falco for anomaly detection, seccomp/AppArmor profiles"
+                "Experiment tracking: params, metrics, artifacts, tags, source version",
+                "Model registry: versions, stages, aliases, approvals, lineage",
+                "Artifact store vs metadata store",
+                "Promotion workflow: dev -> staging -> prod",
+                "Reproducibility: code version, data version, environment, random seed",
+                "Common regulated-industry angle: approval evidence and traceability"
               ],
+              practicePrompt: "Explain the difference between an experiment run, a model artifact, and a registered model version.",
+              assignment: {
+                title: "Track and register a toy model",
+                time: "90 min",
+                objective: "Train a small sklearn/PyTorch model, log it to MLflow, register it, and load it from the registry in your API.",
+                steps: [
+                  "Log params, metrics, confusion matrix or sample output, and model artifact.",
+                  "Register two model versions.",
+                  "Change the API to load a model by alias or version.",
+                  "Write a rollback note: how would you return to the previous version?"
+                ],
+                pitfalls: [
+                  "Interviewers ask how you reproduce a model. Metrics alone are not enough.",
+                  "Registry is not deployment by itself; it feeds deployment.",
+                  "Know what happens if artifact storage is unavailable during startup."
+                ]
+              },
               resources: [
                 {
-                  id: "cis-k8s",
-                  title: "CIS Kubernetes Benchmark",
-                  url: "https://www.cisecurity.org/benchmark/kubernetes",
+                  id: "mlops-mlflow",
+                  title: "MLflow Documentation",
+                  url: "https://mlflow.org/docs/latest/index.html",
                   type: "article",
                   cost: "free",
-                  note: "The industry-standard hardening checklist"
+                  author: "MLflow"
                 },
                 {
-                  id: "kubernetes-security-book",
-                  title: "Kubernetes Security and Observability",
-                  url: "https://www.oreilly.com/library/view/kubernetes-security-and/9781098107093/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Brendan Creane & Amit Gupta"
-                },
-                {
-                  id: "kyverno",
-                  title: "Kyverno — Policy Engine",
-                  url: "https://kyverno.io/",
-                  type: "tool",
+                  id: "mlops-dvc",
+                  title: "DVC Documentation",
+                  url: "https://dvc.org/doc",
+                  type: "article",
                   cost: "free",
-                  note: "YAML-native policies, simpler than OPA/Rego"
-                },
-                {
-                  id: "gatekeeper",
-                  title: "OPA Gatekeeper",
-                  url: "https://open-policy-agent.github.io/gatekeeper/website/docs/",
-                  type: "tool",
-                  cost: "free",
-                  note: "Rego-based policies, industry standard"
-                },
-                {
-                  id: "falco",
-                  title: "Falco — Runtime Security",
-                  url: "https://falco.org/",
-                  type: "tool",
-                  cost: "free",
-                  author: "CNCF"
-                },
-                {
-                  id: "external-secrets",
-                  title: "External Secrets Operator",
-                  url: "https://external-secrets.io/",
-                  type: "tool",
-                  cost: "free",
-                  note: "Sync secrets from Vault, AWS SM, GCP SM into K8s"
+                  author: "DVC"
                 }
               ]
             },
             {
-              id: "do-w1-day6",
+              id: "mlops-w1-day6",
               type: "day",
-              title: "Day 6: Service Networking, Ingress & Gateway API",
-              shortTitle: "Networking & Gateway API",
+              title: "Day 6: CI/CD for ML and GitOps Basics",
+              shortTitle: "ML CI/CD",
               dayLabel: "Day 6",
-              description: "Current senior DevOps and platform roles care heavily about production networking: ingress, service exposure, policy boundaries, and modern traffic control. Gateway API is increasingly replacing annotation-heavy ingress patterns and is worth learning before deep operator work.",
+              description: "The JDs expect CI/CD across backend services and ML workflows. Focus on test gates, image builds, model validation gates, and controlled rollout patterns.",
               concepts: [
-                "Service types: ClusterIP, NodePort, LoadBalancer, ExternalName — how traffic actually enters the cluster",
-                "Ingress vs Gateway API — why Gateway API is the more expressive long-term direction",
-                "GatewayClass, Gateway, HTTPRoute, TLSRoute — the core Gateway API mental model",
-                "North-south vs east-west traffic, ingress controllers, cloud load balancers",
-                "DNS, TLS termination, cert-manager, external-dns, and operational failure modes",
-                "How service networking choices affect cost, resilience, and platform self-service",
-                "When you still need a service mesh and when Gateway API is enough"
+                "CI for ML: unit tests, data checks, training smoke tests, model evaluation gates",
+                "CD for services: build image, scan image, push image, deploy manifest",
+                "GitHub Actions, GitLab CI, Jenkins, Argo CD, and Argo Workflows roles",
+                "Canary and blue/green deployment strategies for model services",
+                "Model validation gate before traffic shift",
+                "Rollback triggers: error rate, latency, business metric, model quality metric"
               ],
+              practicePrompt: "Answer: 'What checks would you run before promoting a new model to production?'",
+              assignment: {
+                title: "Create a model deployment pipeline design",
+                time: "60 min",
+                objective: "Write a CI/CD flow that builds the API image, runs tests, validates a model, and deploys to staging.",
+                steps: [
+                  "List pipeline stages and required artifacts.",
+                  "Define one automated model-quality gate.",
+                  "Define one manual approval gate.",
+                  "Write rollback criteria for canary deployment."
+                ],
+                pitfalls: [
+                  "Interviewers dislike vague 'we monitor it' answers. Name exact metrics.",
+                  "Canary for model quality may need shadow traffic or delayed labels.",
+                  "Separate code rollback from model rollback."
+                ]
+              },
               resources: [
                 {
-                  id: "gateway-api-docs",
-                  title: "Gateway API",
-                  url: "https://kubernetes.io/docs/concepts/services-networking/gateway/",
-                  type: "article",
-                  cost: "free",
-                  author: "Kubernetes",
-                  note: "Current Kubernetes direction for service networking and traffic policy"
-                },
-                {
-                  id: "gateway-api-blog",
-                  title: "Gateway API 1.4: New Features",
-                  url: "https://kubernetes.io/blog/2025/11/06/gateway-api-v1-4/",
-                  type: "article",
-                  cost: "free",
-                  author: "Kubernetes",
-                  note: "Good signal that Gateway API is still actively evolving and worth learning"
-                },
-                {
-                  id: "cert-manager-docs",
-                  title: "cert-manager Documentation",
-                  url: "https://cert-manager.io/docs/",
-                  type: "article",
-                  cost: "free",
-                  note: "TLS automation is a practical must-have for real clusters"
-                },
-                {
-                  id: "external-dns-docs",
-                  title: "ExternalDNS Documentation",
-                  url: "https://kubernetes-sigs.github.io/external-dns/latest/",
-                  type: "article",
-                  cost: "free",
-                  note: "Useful for DNS automation in production clusters"
-                }
-              ]
-            },
-            {
-              id: "do-w1-day7",
-              type: "day",
-              title: "Day 7: Cost Optimization, Multi-cluster & FinOps",
-              shortTitle: "Cost & Multi-cluster",
-              dayLabel: "Day 7",
-              description: "Senior DevOps own cloud spend. Master node-level cost optimization, multi-cluster strategies, and the FinOps practices that make companies keep you.",
-              concepts: [
-                "Right-sizing: VPA recommendations, Goldilocks, actual vs requested resources",
-                "Spot/preemptible instances — interruption handling, diversification strategies",
-                "Karpenter consolidation, Cluster Autoscaler — picking the cheapest fit",
-                "KubeCost & OpenCost — per-namespace, per-deployment cost attribution",
-                "Multi-cluster patterns: hub-and-spoke, mesh, federation",
-                "Cluster API — K8s-native cluster lifecycle management",
-                "Karmada / Open Cluster Management for multi-cluster workload scheduling",
-                "FinOps framework and showback/chargeback models"
-              ],
-              resources: [
-                {
-                  id: "opencost",
-                  title: "OpenCost — Open-source cost monitoring",
-                  url: "https://www.opencost.io/",
-                  type: "tool",
-                  cost: "free",
-                  author: "CNCF"
-                },
-                {
-                  id: "kubecost",
-                  title: "KubeCost",
-                  url: "https://www.kubecost.com/",
-                  type: "tool",
-                  cost: "free-tier",
-                  note: "Commercial OpenCost distribution with more features"
-                },
-                {
-                  id: "cluster-api",
-                  title: "Cluster API (CAPI)",
-                  url: "https://cluster-api.sigs.k8s.io/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "finops-foundation",
-                  title: "FinOps Foundation — Framework",
-                  url: "https://www.finops.org/framework/",
-                  type: "article",
-                  cost: "free",
-                  note: "The cloud financial management discipline"
-                }
-              ]
-            },
-            {
-              id: "do-w1-project1",
-              type: "project",
-              title: "Project #1 — Production-Grade Kubernetes Platform",
-              shortTitle: "Production K8s Platform",
-              dayLabel: "Days 1–7",
-              isProject: true,
-              projectNumber: 1,
-              description: "Build a reference multi-tenant Kubernetes platform — the kind senior engineers design in their first 90 days at a new company. This becomes your portfolio anchor piece.",
-              concepts: [
-                "Multi-node cluster (kind / k3d / real cloud) with ingress, cert-manager, external-dns",
-                "Karpenter for node autoscaling + spot instances",
-                "RBAC per namespace with ServiceAccount tokens federated to cloud IAM (IRSA/Workload Identity)",
-                "Kyverno or Gatekeeper policies enforcing image signing, resource limits, Pod Security",
-                "Prometheus Operator + Grafana + Loki observability stack",
-                "KubeCost for cost visibility",
-                "ArgoCD managing everything via GitOps (see Week 2)",
-                "README with architecture diagram and trade-off decisions"
-              ],
-              resources: []
-            }
-          ]
-        },
-        // -------------------------------------------------
-        // WEEK 2: IaC, GitOps & Platform Engineering
-        // -------------------------------------------------
-        {
-          id: "do-week-2",
-          title: "Week 2",
-          subtitle: "IaC, GitOps & Platform Engineering",
-          days: "Days 8–14",
-          goal: "Master advanced Infrastructure as Code, GitOps delivery, and the Platform Engineering discipline that underpins every modern DevOps org",
-          nodes: [
-            {
-              id: "do-w2-day8-9",
-              type: "day",
-              title: "Day 8–9: Advanced Terraform & IaC Patterns",
-              shortTitle: "Advanced Terraform",
-              dayLabel: "Day 8–9",
-              description: "Move from 'I can write main.tf' to designing IaC at organizational scale — module libraries, remote state strategy, policy-as-code, and drift management.",
-              concepts: [
-                "Module composition, versioning, and a private module registry",
-                "Remote state backends: S3+DynamoDB locking, Terraform Cloud, state encryption",
-                "Terragrunt for DRY configurations across envs/accounts/regions",
-                "Policy as code: OPA/Conftest, Sentinel, Checkov, tfsec",
-                "terraform import & terraform state operations for legacy adoption",
-                "Drift detection — driftctl, Terraform Cloud drift detection, scheduled plans",
-                "Workspaces vs directory-per-env — tradeoffs",
-                "Testing IaC: Terratest, native terraform test (HCL-based)"
-              ],
-              resources: [
-                {
-                  id: "terraform-up-running",
-                  title: "Terraform: Up & Running (3rd Edition)",
-                  url: "https://www.terraformupandrunning.com/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Yevgeniy Brikman",
-                  note: "The definitive Terraform book"
-                },
-                {
-                  id: "terragrunt",
-                  title: "Terragrunt Documentation",
-                  url: "https://terragrunt.gruntwork.io/docs/",
-                  type: "article",
-                  cost: "free",
-                  author: "Gruntwork"
-                },
-                {
-                  id: "checkov",
-                  title: "Checkov — IaC security scanning",
-                  url: "https://www.checkov.io/",
-                  type: "tool",
-                  cost: "free",
-                  author: "Bridgecrew / Prisma"
-                },
-                {
-                  id: "tfsec",
-                  title: "tfsec — Static analysis for Terraform",
-                  url: "https://github.com/aquasecurity/tfsec",
-                  type: "github",
-                  cost: "free"
-                },
-                {
-                  id: "terratest",
-                  title: "Terratest — Go-based IaC testing",
-                  url: "https://terratest.gruntwork.io/",
-                  type: "tool",
-                  cost: "free",
-                  author: "Gruntwork"
-                }
-              ]
-            },
-            {
-              id: "do-w2-day10",
-              type: "day",
-              title: "Day 10: GitHub Actions, OIDC & Runner Strategy",
-              shortTitle: "GitHub Actions & OIDC",
-              dayLabel: "Day 10",
-              description: "Modern senior platform roles are increasingly centered on GitHub Actions, OIDC federation, and secure release automation. This is higher-value in the first 30 days than surveying every IaC alternative.",
-              concepts: [
-                "GitHub Actions as CI/CD control plane: reusable workflows, matrices, protected environments",
-                "OIDC federation to AWS, GCP, Azure, or Vault — eliminate long-lived deploy credentials",
-                "Actions Runner Controller (ARC) — autoscaled self-hosted runners on Kubernetes",
-                "Runner isolation, ephemeral runners, and supply-chain implications",
-                "Artifact provenance, branch protection, and secure deployment approvals",
-                "Where GitHub Actions fits relative to GitLab CI, Jenkins, and Argo Workflows"
-              ],
-              resources: [
-                {
-                  id: "github-actions-docs-devops",
-                  title: "Understanding GitHub Actions",
-                  url: "https://docs.github.com/en/actions/learn-github-actions/understanding-github-actions",
+                  id: "mlops-github-actions",
+                  title: "GitHub Actions Documentation",
+                  url: "https://docs.github.com/en/actions",
                   type: "article",
                   cost: "free",
                   author: "GitHub"
                 },
                 {
-                  id: "github-oidc-docs",
-                  title: "Configuring OpenID Connect in Cloud Providers",
-                  url: "https://docs.github.com/en/actions/how-tos/secure-your-work/security-harden-deployments/oidc-in-cloud-providers",
+                  id: "mlops-argocd",
+                  title: "Argo CD Documentation",
+                  url: "https://argo-cd.readthedocs.io/",
                   type: "article",
                   cost: "free",
-                  author: "GitHub",
-                  note: "A current must-have pattern for secure cloud deployments"
-                },
-                {
-                  id: "github-arc-docs",
-                  title: "Use Actions Runner Controller",
-                  url: "https://docs.github.com/en/actions/how-tos/manage-runners/use-actions-runner-controller",
-                  type: "article",
-                  cost: "free",
-                  author: "GitHub",
-                  note: "Relevant for platform teams standardizing CI at scale on Kubernetes"
+                  author: "Argo"
                 }
               ]
             },
             {
-              id: "do-w2-day11-12",
-              type: "day",
-              title: "Day 11–12: GitOps & Progressive Delivery",
-              shortTitle: "GitOps & Progressive Delivery",
-              dayLabel: "Day 11–12",
-              description: "GitOps is the dominant delivery model for Kubernetes in 2026. Master ArgoCD/Flux patterns and progressive delivery with Argo Rollouts/Flagger.",
-              concepts: [
-                "GitOps principles — declarative, versioned, pulled, continuously reconciled (OpenGitOps)",
-                "ArgoCD: Applications, AppProjects, ApplicationSets, app-of-apps pattern",
-                "Sync waves, hooks, pruning strategies, self-healing",
-                "Flux CD — GitOps Toolkit, Kustomize + Helm integration",
-                "Progressive delivery: canary, blue-green, A/B testing",
-                "Argo Rollouts — traffic shifting with Istio/SMI/Gateway API",
-                "Flagger — automated canary analysis with Prometheus metrics",
-                "Multi-cluster GitOps — pull model at scale"
-              ],
-              resources: [
-                {
-                  id: "opengitops",
-                  title: "OpenGitOps Principles",
-                  url: "https://opengitops.dev/",
-                  type: "article",
-                  cost: "free",
-                  author: "CNCF"
-                },
-                {
-                  id: "argocd-docs",
-                  title: "ArgoCD Documentation",
-                  url: "https://argo-cd.readthedocs.io/en/stable/",
-                  type: "article",
-                  cost: "free",
-                  author: "CNCF"
-                },
-                {
-                  id: "flux-docs",
-                  title: "Flux CD Documentation",
-                  url: "https://fluxcd.io/flux/",
-                  type: "article",
-                  cost: "free",
-                  author: "CNCF"
-                },
-                {
-                  id: "argo-rollouts",
-                  title: "Argo Rollouts",
-                  url: "https://argoproj.github.io/argo-rollouts/",
-                  type: "article",
-                  cost: "free",
-                  note: "Canary + blue-green for K8s"
-                },
-                {
-                  id: "flagger",
-                  title: "Flagger — Progressive Delivery Operator",
-                  url: "https://flagger.app/",
-                  type: "article",
-                  cost: "free",
-                  author: "Flux / CNCF"
-                }
-              ]
-            },
-            {
-              id: "do-w2-day13",
-              type: "day",
-              title: "Day 13: CI/CD Advanced Patterns",
-              shortTitle: "CI/CD Advanced",
-              dayLabel: "Day 13",
-              description: "Beyond basic pipelines — ephemeral environments, buildpack-based image creation, self-hosted runners, and CI security. Senior engineers shape the whole developer experience.",
-              concepts: [
-                "GitHub Actions advanced: matrix, reusable workflows, OIDC federation to AWS/GCP, self-hosted runners (ARC)",
-                "GitLab CI, Jenkins X, Tekton, Argo Workflows — pros and cons",
-                "Cloud Native Buildpacks (CNB) — reproducible images without Dockerfiles",
-                "Multi-stage Docker builds, layer caching, BuildKit, distroless images",
-                "Ephemeral preview environments per PR (vcluster, Okteto, GitHub Codespaces)",
-                "CI security: signed commits, protected branches, hermetic builds, provenance",
-                "CI observability: build metrics, flaky test detection"
-              ],
-              resources: [
-                {
-                  id: "buildpacks",
-                  title: "Cloud Native Buildpacks",
-                  url: "https://buildpacks.io/",
-                  type: "article",
-                  cost: "free",
-                  author: "CNCF"
-                },
-                {
-                  id: "tekton",
-                  title: "Tekton Pipelines",
-                  url: "https://tekton.dev/docs/",
-                  type: "article",
-                  cost: "free",
-                  author: "CNCF"
-                },
-                {
-                  id: "arc",
-                  title: "Actions Runner Controller (ARC)",
-                  url: "https://github.com/actions/actions-runner-controller",
-                  type: "github",
-                  cost: "free",
-                  note: "Self-hosted GitHub runners on K8s"
-                },
-                {
-                  id: "distroless",
-                  title: "Distroless container images",
-                  url: "https://github.com/GoogleContainerTools/distroless",
-                  type: "github",
-                  cost: "free",
-                  author: "Google"
-                },
-                {
-                  id: "vcluster",
-                  title: "vcluster — Virtual K8s clusters",
-                  url: "https://www.vcluster.com/",
-                  type: "tool",
-                  cost: "free-tier",
-                  note: "Cheap ephemeral environments"
-                }
-              ]
-            },
-            {
-              id: "do-w2-day14",
-              type: "day",
-              title: "Day 14: Platform Engineering & Internal Developer Platforms",
-              shortTitle: "Platform Engineering & IDPs",
-              dayLabel: "Day 14",
-              description: "Platform Engineering is the fastest-growing DevOps discipline of 2026. Learn to build Internal Developer Platforms, golden paths, and treat your platform as a product.",
-              concepts: [
-                "Platform as a Product mindset — users, JTBD, paved roads",
-                "Golden paths / paved roads — opinionated defaults that reduce cognitive load",
-                "Team Topologies: stream-aligned, platform, enabling, complicated-subsystem teams",
-                "Backstage — service catalog, software templates, TechDocs, plugins",
-                "Port, Cortex, Humanitec — managed IDP platforms",
-                "Developer experience (DX) metrics: SPACE, DORA",
-                "Self-service infra via Crossplane + Backstage",
-                "CNOE (Cloud Native Operational Excellence) reference patterns"
-              ],
-              resources: [
-                {
-                  id: "team-topologies",
-                  title: "Team Topologies",
-                  url: "https://teamtopologies.com/book",
-                  type: "book",
-                  cost: "paid",
-                  author: "Matthew Skelton & Manuel Pais",
-                  note: "Foundational reading for any platform team"
-                },
-                {
-                  id: "platform-eng-org",
-                  title: "platformengineering.org",
-                  url: "https://platformengineering.org/",
-                  type: "article",
-                  cost: "free",
-                  note: "Community hub, maturity model, newsletter"
-                },
-                {
-                  id: "backstage",
-                  title: "Backstage Documentation",
-                  url: "https://backstage.io/docs/overview/what-is-backstage",
-                  type: "article",
-                  cost: "free",
-                  author: "Spotify / CNCF"
-                },
-                {
-                  id: "backstage-templates",
-                  title: "Backstage Software Templates",
-                  url: "https://backstage.io/docs/features/software-templates/",
-                  type: "article",
-                  cost: "free",
-                  note: "Critical for building real golden paths and self-service workflows"
-                },
-                {
-                  id: "cnoe",
-                  title: "CNOE — Cloud Native Operational Excellence",
-                  url: "https://cnoe.io/",
-                  type: "article",
-                  cost: "free",
-                  note: "Reference IDP built on OSS by AWS/Nike/Autodesk/Twilio"
-                },
-                {
-                  id: "space-framework",
-                  title: "The SPACE Framework for Developer Productivity",
-                  url: "https://queue.acm.org/detail.cfm?id=3454124",
-                  type: "article",
-                  cost: "free",
-                  author: "Forsgren et al.",
-                  note: "Why DORA alone isn't enough"
-                }
-              ]
-            },
-            {
-              id: "do-w2-project2",
+              id: "mlops-w1-project",
               type: "project",
-              title: "Project #2 — Internal Developer Platform (IDP)",
-              shortTitle: "Internal Developer Platform",
-              dayLabel: "Days 8–14",
+              title: "Project #1 - Minimal Production ML Service",
+              shortTitle: "Production ML Service",
+              dayLabel: "Day 7",
               isProject: true,
-              projectNumber: 2,
-              description: "Deploy a working IDP with Backstage, ArgoCD, Terraform modules and Crossplane — the exact setup senior platform engineers build in 2026.",
+              projectNumber: 1,
+              description: "Combine the first week into a small but interview-ready service: FastAPI, Docker, Kubernetes manifests, MLflow tracking, and a CI/CD design.",
               concepts: [
-                "Backstage with TechDocs, software templates, and catalog discovery",
-                "Self-service 'spin up a new microservice' template that provisions: repo + pipeline + K8s namespace + monitoring",
-                "ArgoCD syncing everything declared in Git",
-                "Crossplane Compositions exposing 'Database', 'Bucket', 'Queue' as XRDs",
-                "Terraform modules published to a private module registry",
-                "Progressive delivery with Argo Rollouts built into the template",
-                "Document the golden path and SLO commitments"
+                "FastAPI inference endpoint with request validation",
+                "Docker image with health/readiness endpoints",
+                "Kubernetes Deployment, Service, ConfigMap, Secret, probes, and resource requests",
+                "MLflow model version loaded by config",
+                "Latency and model-version logging",
+                "README with architecture diagram, failure modes, and rollback plan"
               ],
+              practicePrompt: "Record a 3-minute walkthrough explaining how this service moves from local training to production serving.",
+              assignment: {
+                title: "Interview demo package",
+                time: "2-3 hours",
+                objective: "Package the service so you can explain it during interviews without live debugging.",
+                steps: [
+                  "Add a README architecture diagram.",
+                  "Add commands for local run, Docker run, and Kubernetes deploy.",
+                  "Add a troubleshooting section for ImagePullBackOff, CrashLoopBackOff, readiness failure, and bad model version."
+                ],
+                pitfalls: [
+                  "A good demo includes operational failure handling, not just a happy path.",
+                  "Be ready to answer where metrics, logs, artifacts, and configs live."
+                ]
+              },
               resources: []
             }
           ]
         },
-        // -------------------------------------------------
-        // WEEK 3: Observability, Security & SRE
-        // -------------------------------------------------
         {
-          id: "do-week-3",
-          title: "Week 3",
-          subtitle: "Observability, Security & SRE",
-          days: "Days 15–21",
-          goal: "Become fluent in OpenTelemetry, Prometheus-at-scale, SRE practice, incident ownership, and supply-chain security — the reliability pillars current senior roles expect",
+          id: "mlops-week-2",
+          title: "Week 2",
+          subtitle: "GPU Kubernetes, Distributed Training & ML Platforms",
+          days: "Days 8-14",
+          goal: "Get interview-ready for the GPU-heavy parts of the JDs: CUDA basics, GPU scheduling, device plugins, Ray/KubeRay, Kubeflow, Kueue/Volcano, and distributed training.",
           nodes: [
             {
-              id: "do-w3-day15-16",
+              id: "mlops-w2-day8",
               type: "day",
-              title: "Day 15–16: Observability — Metrics, Logs, Traces & OpenTelemetry",
-              shortTitle: "Observability & OTel",
-              dayLabel: "Day 15–16",
-              description: "The three pillars plus OpenTelemetry as the vendor-neutral standard. Understand cardinality limits, trace sampling, and how to scale Prometheus beyond a single instance.",
+              title: "Day 8: GPU Fundamentals for MLOps",
+              shortTitle: "GPU Fundamentals",
+              dayLabel: "Day 8",
+              description: "You do not need to write CUDA kernels for most MLOps roles, but you must understand GPU memory, utilization, batching, drivers, CUDA runtime, and why accelerators change scheduling and cost.",
               concepts: [
-                "Three pillars: metrics, logs, traces (plus profiling — the emerging fourth)",
-                "OpenTelemetry — the standard: SDKs, OTLP protocol, Collector, auto-instrumentation",
-                "Prometheus at scale: Thanos, Cortex, Mimir, VictoriaMetrics — federation patterns",
-                "Log aggregation: Loki (grep-style, cheap), ELK (indexed, expensive), Vector for shipping",
-                "Distributed tracing: Tempo, Jaeger, sampling strategies (head-based vs tail-based)",
-                "Cardinality explosion — why labels kill Prometheus",
-                "PromQL mastery: rate, histogram_quantile, aggregations, recording rules",
-                "Grafana dashboards, alerting rules, Alertmanager routing"
+                "GPU vs CPU: parallelism, throughput, memory bandwidth, and accelerator economics",
+                "CUDA driver vs CUDA runtime vs framework build compatibility",
+                "GPU memory: model weights, activations, batch size, KV cache, fragmentation",
+                "Compute utilization vs memory utilization vs memory bandwidth bottlenecks",
+                "nvidia-smi basics: utilization, memory, processes, power, temperature",
+                "Common cost issue: allocated GPU but low utilization"
               ],
+              practicePrompt: "Prepare a simple answer for: 'Why is my GPU allocated but utilization is near 0%?'",
+              assignment: {
+                title: "Read GPU telemetry",
+                time: "45 min",
+                objective: "Use `nvidia-smi` output examples or a real GPU machine to identify memory pressure, idle GPUs, and overloaded GPUs.",
+                steps: [
+                  "Capture or find sample `nvidia-smi` outputs.",
+                  "Label memory used, GPU utilization, process id, and power usage.",
+                  "Write three likely causes for low utilization."
+                ],
+                pitfalls: [
+                  "Low GPU utilization can be caused by CPU preprocessing, data loading, small batch size, or network/storage bottlenecks.",
+                  "GPU memory full does not mean GPU compute is busy.",
+                  "Driver/runtime mismatch is a common deployment failure."
+                ]
+              },
               resources: [
                 {
-                  id: "observability-engineering",
-                  title: "Observability Engineering (O'Reilly)",
-                  url: "https://www.oreilly.com/library/view/observability-engineering/9781492076438/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Charity Majors, Liz Fong-Jones, George Miranda",
-                  note: "The modern observability bible"
-                },
-                {
-                  id: "otel-docs",
-                  title: "OpenTelemetry Documentation",
-                  url: "https://opentelemetry.io/docs/",
+                  id: "mlops-cuda-c-programming-guide",
+                  title: "CUDA C++ Programming Guide",
+                  url: "https://docs.nvidia.com/cuda/cuda-c-programming-guide/",
                   type: "article",
                   cost: "free",
-                  author: "CNCF"
+                  author: "NVIDIA"
                 },
                 {
-                  id: "prometheus-docs",
-                  title: "Prometheus Documentation",
-                  url: "https://prometheus.io/docs/introduction/overview/",
+                  id: "mlops-nvidia-smi",
+                  title: "NVIDIA System Management Interface",
+                  url: "https://developer.nvidia.com/system-management-interface",
                   type: "article",
                   cost: "free",
-                  author: "CNCF"
-                },
-                {
-                  id: "robust-perception",
-                  title: "Robust Perception Blog (Brian Brazil)",
-                  url: "https://www.robustperception.io/blog/",
-                  type: "article",
-                  cost: "free",
-                  note: "Prometheus co-creator's blog — deep PromQL content"
-                },
-                {
-                  id: "honeycomb-blog",
-                  title: "Honeycomb Blog",
-                  url: "https://www.honeycomb.io/blog",
-                  type: "article",
-                  cost: "free",
-                  author: "Charity Majors & team",
-                  note: "High-cardinality observability done right"
-                },
-                {
-                  id: "thanos-docs",
-                  title: "Thanos — Long-term Prometheus",
-                  url: "https://thanos.io/tip/thanos/quick-tutorial.md/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "otel-collector",
-                  title: "OpenTelemetry Collector",
-                  url: "https://opentelemetry.io/docs/collector/",
-                  type: "article",
-                  cost: "free",
-                  author: "OpenTelemetry",
-                  note: "The current vendor-neutral backbone for telemetry pipelines"
+                  author: "NVIDIA"
                 }
               ]
             },
             {
-              id: "do-w3-day17",
+              id: "mlops-w2-day9",
               type: "day",
-              title: "Day 17: SRE Fundamentals — SLO, Error Budgets & Toil",
-              shortTitle: "SRE Fundamentals",
-              dayLabel: "Day 17",
-              description: "Google invented SRE and published the playbook for free. Internalize SLI/SLO/SLA, error budgets, toil tracking, and the reliability-velocity tradeoff every senior must defend.",
+              title: "Day 9: GPUs on Kubernetes",
+              shortTitle: "GPU K8s",
+              dayLabel: "Day 9",
+              description: "The JDs strongly emphasize GPU clusters on Kubernetes. Learn NVIDIA device plugin, GPU Operator, node labels, taints/tolerations, requests, scheduling, and basic troubleshooting.",
               concepts: [
-                "SLI (Service Level Indicator), SLO (Objective), SLA (Agreement) — precise definitions",
-                "Error budgets — the math, the politics, budget burn-rate alerts",
-                "Toil — the formal definition, tracking, and reduction",
-                "The four golden signals: latency, traffic, errors, saturation",
-                "RED method (Rate/Errors/Duration) and USE method (Utilization/Saturation/Errors)",
-                "Incident command system: IC, SME, comms lead",
-                "Blameless postmortems — the cultural prerequisite",
-                "On-call health: rotation, paging policy, psychological safety"
+                "NVIDIA device plugin exposes `nvidia.com/gpu` resources",
+                "GPU Operator installs driver, toolkit, device plugin, DCGM exporter, and related components",
+                "GPU node pools, labels, taints, tolerations, and node affinity",
+                "GPU requests and limits: why GPUs are scheduled as integer extended resources",
+                "MIG basics: partitioning supported NVIDIA GPUs for smaller workloads",
+                "Troubleshooting: missing device plugin, unschedulable pods, driver mismatch, CUDA unavailable"
               ],
+              practicePrompt: "Answer: 'A GPU pod is Pending even though the cluster has GPU nodes. What do you check?'",
+              assignment: {
+                title: "Write GPU scheduling manifests",
+                time: "90 min",
+                objective: "Create Kubernetes YAML for a GPU workload with node selector, toleration, resource request, and basic startup command.",
+                steps: [
+                  "Write a pod or Job requesting `nvidia.com/gpu: 1`.",
+                  "Add nodeSelector/affinity for GPU nodes.",
+                  "Add tolerations for a GPU node taint.",
+                  "Add a debugging checklist for Pending and CUDA unavailable."
+                ],
+                pitfalls: [
+                  "If the device plugin is not running, the scheduler does not see GPUs.",
+                  "Requests for GPUs must normally equal limits.",
+                  "Node labels and taints are separate concepts; interviewers often test this."
+                ]
+              },
               resources: [
                 {
-                  id: "sre-book",
-                  title: "Site Reliability Engineering (Google SRE Book)",
-                  url: "https://sre.google/sre-book/table-of-contents/",
-                  type: "book",
-                  cost: "free",
-                  author: "Google",
-                  note: "The original — free online"
-                },
-                {
-                  id: "sre-workbook",
-                  title: "The Site Reliability Workbook",
-                  url: "https://sre.google/workbook/table-of-contents/",
-                  type: "book",
-                  cost: "free",
-                  author: "Google",
-                  note: "Practical exercises — free online"
-                },
-                {
-                  id: "sre-ops",
-                  title: "Building Secure and Reliable Systems",
-                  url: "https://sre.google/books/building-secure-reliable-systems/",
-                  type: "book",
-                  cost: "free",
-                  author: "Google",
-                  note: "The security x SRE book — also free"
-                },
-                {
-                  id: "slo-alerting",
-                  title: "Implementing SLO-based alerting (Google Cloud)",
-                  url: "https://sre.google/workbook/alerting-on-slos/",
+                  id: "mlops-k8s-gpu-scheduling",
+                  title: "Kubernetes - Schedule GPUs",
+                  url: "https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/",
                   type: "article",
                   cost: "free",
-                  note: "The canonical guide to multi-window burn-rate alerts"
-                }
-              ]
-            },
-            {
-              id: "do-w3-day18",
-              type: "day",
-              title: "Day 18: Incident Response, RCA & Postmortems",
-              shortTitle: "Incident Response & RCA",
-              dayLabel: "Day 18",
-              description: "Current senior DevOps job descriptions repeatedly call out incident ownership, postmortems, RCA quality, and MTTR reduction. This belongs in the 30-day core before chaos specialization.",
-              concepts: [
-                "Incident roles: incident commander, operations lead, communications lead, subject-matter expert",
-                "Detection → triage → mitigation → communication → recovery → follow-through",
-                "Root cause analysis versus symptom explanation",
-                "Write postmortems that produce concrete preventive work, not vague action items",
-                "MTTR, recurrence rate, alert quality, and toil reduction as operational metrics",
-                "How to lead incidents calmly across application, platform, and security boundaries"
-              ],
-              resources: [
-                {
-                  id: "sre-workbook-incident",
-                  title: "The Site Reliability Workbook",
-                  url: "https://sre.google/workbook/table-of-contents/",
-                  type: "book",
-                  cost: "free",
-                  author: "Google",
-                  note: "Use the incident response and postmortem chapters here"
+                  author: "Kubernetes"
                 },
                 {
-                  id: "google-postmortem",
-                  title: "Postmortem Culture: Learning from Failure",
-                  url: "https://sre.google/sre-book/postmortem-culture/",
-                  type: "article",
-                  cost: "free",
-                  author: "Google"
-                }
-              ]
-            },
-            {
-              id: "do-w3-day19-20",
-              type: "day",
-              title: "Day 19–20: DevSecOps & Supply Chain Security",
-              shortTitle: "DevSecOps & Supply Chain",
-              dayLabel: "Day 19–20",
-              description: "Supply chain attacks (SolarWinds, Log4j, 3CX) made this a board-level concern. Know SBOM, SLSA, Sigstore and zero-trust identity — the modern defense stack.",
-              concepts: [
-                "Software Bill of Materials (SBOM) — SPDX, CycloneDX formats",
-                "SLSA framework — levels, attestations, provenance",
-                "Sigstore: cosign (signing), rekor (transparency log), fulcio (ephemeral certs)",
-                "Admission-time signature verification (Kyverno, Connaisseur)",
-                "Dependency scanning: Trivy, Grype, Snyk, Dependabot, OSV Scanner",
-                "Secrets management: HashiCorp Vault, SOPS, cloud KMS integration",
-                "Zero-trust identity: SPIFFE/SPIRE for workload identity",
-                "Policy as code for security: Conftest, OPA in CI",
-                "Runtime security with Falco + custom rules"
-              ],
-              resources: [
-                {
-                  id: "slsa-dev",
-                  title: "SLSA.dev — Supply-chain Levels for Software Artifacts",
-                  url: "https://slsa.dev/",
-                  type: "article",
-                  cost: "free",
-                  author: "OpenSSF"
-                },
-                {
-                  id: "sigstore",
-                  title: "Sigstore Documentation",
-                  url: "https://docs.sigstore.dev/",
-                  type: "article",
-                  cost: "free",
-                  author: "OpenSSF"
-                },
-                {
-                  id: "vault-docs",
-                  title: "HashiCorp Vault Documentation",
-                  url: "https://developer.hashicorp.com/vault/docs",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "spiffe-spire",
-                  title: "SPIFFE / SPIRE",
-                  url: "https://spiffe.io/",
-                  type: "article",
-                  cost: "free",
-                  author: "CNCF",
-                  note: "Zero-trust workload identity"
-                },
-                {
-                  id: "cncf-tag-security",
-                  title: "CNCF TAG Security — Cloud Native Security Whitepapers",
-                  url: "https://github.com/cncf/tag-security",
-                  type: "github",
-                  cost: "free"
-                },
-                {
-                  id: "trivy",
-                  title: "Trivy — All-in-one scanner",
-                  url: "https://trivy.dev/",
-                  type: "tool",
-                  cost: "free",
-                  author: "Aqua Security"
-                }
-              ]
-            },
-            {
-              id: "do-w3-day21",
-              type: "day",
-              title: "Day 21: Platform Leadership, ADRs & Developer Enablement",
-              shortTitle: "Leadership & Enablement",
-              dayLabel: "Day 21",
-              description: "Senior roles are not just deeper technical versions of mid-level roles. They also require clear technical writing, platform-as-a-product thinking, mentoring, and the ability to remove friction for other teams.",
-              concepts: [
-                "Architecture Decision Records (ADRs) and RFCs as senior engineering artifacts",
-                "Platform as a product: user feedback loops, paved roads, and reducing cognitive load",
-                "Cross-team collaboration and trade-off communication",
-                "Mentoring and review standards that raise platform quality across teams",
-                "How to prioritize work that reduces toil and accelerates delivery organization-wide"
-              ],
-              resources: [
-                {
-                  id: "space-framework-day21",
-                  title: "The SPACE Framework for Developer Productivity",
-                  url: "https://queue.acm.org/detail.cfm?id=3454124",
-                  type: "article",
-                  cost: "free",
-                  author: "Forsgren et al."
-                },
-                {
-                  id: "team-topologies-day21",
-                  title: "Team Topologies",
-                  url: "https://teamtopologies.com/book",
-                  type: "book",
-                  cost: "paid",
-                  author: "Matthew Skelton & Manuel Pais",
-                  note: "Useful for the human systems side of platform work"
-                },
-                {
-                  id: "platform-engineering-org-day21",
-                  title: "platformengineering.org",
-                  url: "https://platformengineering.org/",
-                  type: "article",
-                  cost: "free",
-                  note: "Current platform engineering community hub and maturity content"
-                }
-              ]
-            },
-            {
-              id: "do-w3-project3",
-              type: "project",
-              title: "Project #3 — Zero-Trust, SLO-Driven Platform",
-              shortTitle: "Zero-Trust Observable Platform",
-              dayLabel: "Days 15–21",
-              isProject: true,
-              projectNumber: 3,
-              description: "Layer on security + observability + reliability to your Week 1 platform. This is the kind of reference stack that gets you past senior interview loops.",
-              concepts: [
-                "Full OpenTelemetry stack: OTel Collector → Prometheus/Tempo/Loki → Grafana",
-                "SLOs defined per service with multi-window burn-rate alerts",
-                "Sigstore signing + Kyverno enforcement blocking unsigned images",
-                "Vault for secrets with K8s auth method",
-                "Cilium CNI with L7 network policies and Hubble dashboards",
-                "Run structured incident drills and alert-quality reviews against your SLOs",
-                "Falco runtime security alerts routed to Slack",
-                "README with threat model and SLO error-budget policy"
-              ],
-              resources: []
-            }
-          ]
-        },
-        // -------------------------------------------------
-        // WEEK 4: MLOps Deep Dive
-        // -------------------------------------------------
-        {
-          id: "do-week-4",
-          title: "Week 4",
-          subtitle: "MLOps Deep Dive",
-          days: "Days 22–30",
-          goal: "Master the high-signal MLOps and LLMOps stack current senior roles ask for most: pipelines, registry/versioning, serving, monitoring, GPU utilization, and LLM infrastructure",
-          nodes: [
-            {
-              id: "do-w4-day22",
-              type: "day",
-              title: "Day 22: MLOps Foundations & Maturity",
-              shortTitle: "MLOps Foundations",
-              dayLabel: "Day 22",
-              description: "MLOps isn't just DevOps for ML. Data and models add new dimensions of drift, lineage, and governance. Understand the maturity model and what 'production ML' actually means.",
-              concepts: [
-                "Why MLOps ≠ DevOps: data, models, and code all change independently",
-                "The full ML lifecycle: data → features → train → validate → deploy → monitor → retrain",
-                "Google's MLOps maturity levels (0/1/2) — where most orgs actually are",
-                "Training-serving skew — the #1 silent killer of ML systems",
-                "Offline vs online, batch vs real-time, shadow vs canary for ML",
-                "Model governance: reproducibility, auditability, approval workflows",
-                "Hidden technical debt in ML systems (Sculley et al., NeurIPS 2015)"
-              ],
-              resources: [
-                {
-                  id: "ml-engineering-burkov",
-                  title: "Machine Learning Engineering",
-                  url: "http://www.mlebook.com/",
-                  type: "book",
-                  cost: "free",
-                  author: "Andriy Burkov",
-                  note: "Free to read online"
-                },
-                {
-                  id: "designing-ml-systems",
-                  title: "Designing Machine Learning Systems",
-                  url: "https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Chip Huyen",
-                  note: "The definitive ML systems book for 2026"
-                },
-                {
-                  id: "google-mlops-guide",
-                  title: "Google — MLOps: Continuous delivery and automation pipelines in ML",
-                  url: "https://cloud.google.com/architecture/mlops-continuous-delivery-and-automation-pipelines-in-machine-learning",
-                  type: "article",
-                  cost: "free",
-                  author: "Google Cloud"
-                },
-                {
-                  id: "hidden-debt-paper",
-                  title: "Hidden Technical Debt in Machine Learning Systems",
-                  url: "https://papers.nips.cc/paper/2015/hash/86df7dcfd896fcaf2674f757a2463eba-Abstract.html",
-                  type: "article",
-                  cost: "free",
-                  author: "Sculley et al. (Google)",
-                  note: "Seminal paper — cited in every senior MLOps interview"
-                },
-                {
-                  id: "chip-mlops-blog",
-                  title: "Chip Huyen's blog — MLOps articles",
-                  url: "https://huyenchip.com/blog/",
-                  type: "article",
-                  cost: "free",
-                  author: "Chip Huyen"
-                }
-              ]
-            },
-            {
-              id: "do-w4-day23",
-              type: "day",
-              title: "Day 23: ML Pipelines & Orchestration",
-              shortTitle: "ML Pipelines & Orchestration",
-              dayLabel: "Day 23",
-              description: "ML training and batch inference need orchestration. Know the landscape: Kubeflow (K8s-native heavy), Metaflow (opinionated, Netflix), Dagster/Prefect (modern Python), Airflow (still everywhere).",
-              concepts: [
-                "Kubeflow Pipelines — K8s-native, heavyweight, enterprise-ready",
-                "Metaflow — Netflix's framework, great DX, AWS-native",
-                "Dagster — software-defined assets, excellent observability",
-                "Prefect — Airflow but modern, Python-first",
-                "Airflow — still dominant in data engineering, DAG-based",
-                "MLflow Projects vs full pipeline orchestrators",
-                "Argo Workflows for K8s-native step-function-style pipelines",
-                "DAG design, idempotency, retries, backfills"
-              ],
-              resources: [
-                {
-                  id: "kubeflow-pipelines",
-                  title: "Kubeflow Pipelines Documentation",
-                  url: "https://www.kubeflow.org/docs/components/pipelines/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "metaflow-docs",
-                  title: "Metaflow Documentation",
-                  url: "https://docs.metaflow.org/",
-                  type: "article",
-                  cost: "free",
-                  author: "Netflix"
-                },
-                {
-                  id: "dagster-docs",
-                  title: "Dagster Documentation",
-                  url: "https://docs.dagster.io/",
-                  type: "article",
-                  cost: "free-tier"
-                },
-                {
-                  id: "prefect-docs",
-                  title: "Prefect Documentation",
-                  url: "https://docs.prefect.io/",
-                  type: "article",
-                  cost: "free-tier"
-                },
-                {
-                  id: "argo-workflows",
-                  title: "Argo Workflows",
-                  url: "https://argo-workflows.readthedocs.io/",
-                  type: "article",
-                  cost: "free",
-                  author: "CNCF"
-                }
-              ]
-            },
-            {
-              id: "do-w4-day24",
-              type: "day",
-              title: "Day 24: Model/Data Versioning, Validation & Promotion",
-              shortTitle: "Versioning & Validation",
-              dayLabel: "Day 24",
-              description: "Current MLOps roles more consistently demand model versioning, validation gates, reproducibility, and promotion workflows than full feature-store depth. Keep feature stores as a later specialization unless your target companies are explicitly feature-heavy.",
-              concepts: [
-                "Data and model versioning: DVC, LakeFS, artifact stores, immutable releases",
-                "Validation gates before promotion: offline metrics, regression checks, schema/data quality checks",
-                "Reproducibility across code, data, environment, model artifacts, and seeds",
-                "Promotion workflows: staging → shadow → canary → production",
-                "Training-serving skew and data contracts without overcommitting to feature-store complexity"
-              ],
-              resources: [
-                {
-                  id: "dvc-docs",
-                  title: "DVC — Data Version Control",
-                  url: "https://dvc.org/doc",
-                  type: "tool",
-                  cost: "free"
-                },
-                {
-                  id: "lakefs",
-                  title: "LakeFS — Git-like data lakes",
-                  url: "https://docs.lakefs.io/",
-                  type: "tool",
-                  cost: "free-tier"
-                },
-                {
-                  id: "evidently-intro",
-                  title: "Evidently Documentation",
-                  url: "https://docs.evidentlyai.com/introduction",
-                  type: "article",
-                  cost: "free",
-                  note: "Useful for validation and monitoring workflows before and after deployment"
-                }
-              ]
-            },
-            {
-              id: "do-w4-day25",
-              type: "day",
-              title: "Day 25: Model Registry, Experiment Tracking & Lineage",
-              shortTitle: "Registry & Tracking",
-              dayLabel: "Day 25",
-              description: "Without a model registry, you can't answer 'what's in prod?' or 'can we reproduce this?' These are compliance and debugging essentials — and interview favorites.",
-              concepts: [
-                "Model registry — versioned, staged (dev/staging/prod), with approvals",
-                "MLflow Tracking + Model Registry — the open-source workhorse",
-                "Weights & Biases — tracking + viz, hosted",
-                "Neptune, Comet — tracking alternatives",
-                "Model cards — documentation standard for responsible AI",
-                "Lineage: data → features → training run → model → deployment",
-                "Artifact stores: S3/GCS + metadata DB",
-                "Reproducibility: code + data + env + seed pinning"
-              ],
-              resources: [
-                {
-                  id: "mlflow-docs",
-                  title: "MLflow Documentation",
-                  url: "https://mlflow.org/docs/latest/index.html",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "wandb-docs",
-                  title: "Weights & Biases Documentation",
-                  url: "https://docs.wandb.ai/",
-                  type: "article",
-                  cost: "free-tier"
-                },
-                {
-                  id: "model-cards-paper",
-                  title: "Model Cards for Model Reporting (Mitchell et al.)",
-                  url: "https://arxiv.org/abs/1810.03993",
-                  type: "article",
-                  cost: "free",
-                  note: "The responsible AI documentation standard"
-                },
-                {
-                  id: "neptune-ai",
-                  title: "neptune.ai — Experiment tracking",
-                  url: "https://docs.neptune.ai/",
-                  type: "article",
-                  cost: "free-tier"
-                }
-              ]
-            },
-            {
-              id: "do-w4-day26-27",
-              type: "day",
-              title: "Day 26–27: Model Serving at Scale",
-              shortTitle: "Model Serving at Scale",
-              dayLabel: "Day 26–27",
-              description: "Serving production ML on Kubernetes — the area where DevOps skills most directly apply. KServe, Triton, Ray Serve, BentoML, and the GPU scheduling patterns that make it work.",
-              concepts: [
-                "KServe (formerly KFServing) — K8s-native serverless inference",
-                "Seldon Core — advanced deployment graphs, explainers",
-                "BentoML — Python-first, framework-agnostic",
-                "Ray Serve — for heterogeneous, multi-model pipelines",
-                "NVIDIA Triton Inference Server — highest throughput, multi-framework",
-                "Model optimization: ONNX Runtime, TensorRT, quantization (INT8/FP16)",
-                "GPU scheduling on K8s: NVIDIA GPU Operator, MIG, time-slicing, fractional GPUs",
-                "Batching strategies: dynamic batching, continuous batching (vLLM)",
-                "Cold starts, model caching, model-per-replica vs shared"
-              ],
-              resources: [
-                {
-                  id: "kserve-docs",
-                  title: "KServe Documentation",
-                  url: "https://kserve.github.io/website/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "seldon-core",
-                  title: "Seldon Core Documentation",
-                  url: "https://docs.seldon.io/projects/seldon-core/en/latest/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "bentoml-docs",
-                  title: "BentoML Documentation",
-                  url: "https://docs.bentoml.com/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "triton-docs",
-                  title: "NVIDIA Triton Inference Server",
-                  url: "https://docs.nvidia.com/deeplearning/triton-inference-server/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "ray-serve",
-                  title: "Ray Serve Documentation",
-                  url: "https://docs.ray.io/en/latest/serve/index.html",
-                  type: "article",
-                  cost: "free",
-                  author: "Anyscale"
-                },
-                {
-                  id: "nvidia-gpu-operator",
-                  title: "NVIDIA GPU Operator",
-                  url: "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/overview.html",
-                  type: "article",
-                  cost: "free"
-                }
-              ]
-            },
-            {
-              id: "do-w4-day28",
-              type: "day",
-              title: "Day 28: Model Monitoring & Drift Detection",
-              shortTitle: "Model Monitoring & Drift",
-              dayLabel: "Day 28",
-              description: "Prod models degrade silently. You must detect data drift, concept drift, and performance regression — and have playbooks for retraining.",
-              concepts: [
-                "Data drift: input distribution changes (KS test, PSI, Chi-square)",
-                "Concept drift: relationship between inputs and outputs changes",
-                "Prediction drift: output distribution shifts",
-                "Ground-truth lag — when you don't know performance for days/weeks",
-                "Evidently, Arize, WhyLabs, Fiddler, Aporia — the monitoring landscape",
-                "Shadow mode deployments — compare new model to old silently",
-                "Champion/challenger and A/B testing for ML",
-                "Automated retraining triggers — drift-based vs schedule-based"
-              ],
-              resources: [
-                {
-                  id: "evidently-docs",
-                  title: "Evidently AI — Open-source ML monitoring",
-                  url: "https://docs.evidentlyai.com/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "arize-blog",
-                  title: "Arize AI Blog — ML Observability",
-                  url: "https://arize.com/blog/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "whylabs-docs",
-                  title: "WhyLabs — whylogs open-source",
-                  url: "https://docs.whylabs.ai/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "aporia-blog",
-                  title: "Aporia — ML Observability blog",
-                  url: "https://www.aporia.com/blog/",
-                  type: "article",
-                  cost: "free"
-                }
-              ]
-            },
-            {
-              id: "do-w4-day29",
-              type: "day",
-              title: "Day 29: LLMOps in Production",
-              shortTitle: "LLMOps in Production",
-              dayLabel: "Day 29",
-              description: "The hottest subfield. GPU infrastructure, high-throughput serving, semantic caching, cost tracking, and model gateways are now common asks in senior ML platform roles.",
-              concepts: [
-                "GPU infrastructure: A100/H100/L4/L40S selection, spot vs reserved",
-                "vLLM — continuous batching, PagedAttention, the production default",
-                "TGI (Text Generation Inference) — HuggingFace's server",
-                "SGLang — increasingly relevant for high-performance LLM and VLM serving",
-                "TensorRT-LLM — highest throughput via NVIDIA optimization",
-                "Semantic caching (GPTCache, Redis) — huge cost wins for chat traffic",
-                "Prompt versioning, A/B testing prompts in prod",
-                "Multi-tenancy: per-tenant rate limits, quotas, cost tracking",
-                "Fine-tuning infra: QLoRA training clusters, Unsloth, Axolotl",
-                "LLM gateway pattern: Portkey, LiteLLM, Helicone"
-              ],
-              resources: [
-                {
-                  id: "vllm-docs",
-                  title: "vLLM Documentation",
-                  url: "https://docs.vllm.ai/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "tgi",
-                  title: "Text Generation Inference (TGI)",
-                  url: "https://huggingface.co/docs/text-generation-inference/",
-                  type: "article",
-                  cost: "free",
-                  author: "HuggingFace"
-                },
-                {
-                  id: "sglang-docs",
-                  title: "SGLang Documentation",
-                  url: "https://docs.sglang.ai/",
-                  type: "article",
-                  cost: "free",
-                  note: "Shows up increasingly in LLM infrastructure job requirements"
-                },
-                {
-                  id: "tensorrt-llm",
-                  title: "TensorRT-LLM",
-                  url: "https://github.com/NVIDIA/TensorRT-LLM",
+                  id: "mlops-nvidia-device-plugin",
+                  title: "NVIDIA k8s-device-plugin",
+                  url: "https://github.com/NVIDIA/k8s-device-plugin",
                   type: "github",
                   cost: "free",
                   author: "NVIDIA"
                 },
                 {
-                  id: "anyscale-blog",
-                  title: "Anyscale Blog — Ray + LLM infra",
-                  url: "https://www.anyscale.com/blog",
+                  id: "mlops-gpu-operator",
+                  title: "NVIDIA GPU Operator",
+                  url: "https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/index.html",
                   type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "litellm",
-                  title: "LiteLLM — LLM gateway & proxy",
-                  url: "https://docs.litellm.ai/",
-                  type: "tool",
-                  cost: "free"
+                  cost: "free",
+                  author: "NVIDIA"
                 }
               ]
             },
             {
-              id: "do-w4-project4",
-              type: "project",
-              title: "Project #4 — End-to-End MLOps Platform",
-              shortTitle: "End-to-End MLOps Platform",
-              dayLabel: "Days 22–29",
-              isProject: true,
-              projectNumber: 4,
-              description: "Capstone: a full MLOps platform on top of Weeks 1–3. This is the portfolio project senior MLOps candidates are asked to walk through in every onsite.",
+              id: "mlops-w2-day10",
+              type: "day",
+              title: "Day 10: Distributed Training with PyTorch, DeepSpeed & Ray",
+              shortTitle: "Distributed Training",
+              dayLabel: "Day 10",
+              description: "Several JDs call out PyTorch DDP/FSDP, DeepSpeed, Megatron, Ray Train, and multi-node GPU workloads. Learn the concepts enough to debug platform issues and explain tradeoffs.",
               concepts: [
-                "Data ingestion pipeline (Airflow/Dagster/Argo) with versioned datasets and validation checks",
-                "Training pipeline (Kubeflow/Metaflow) with MLflow tracking + model registry",
-                "Model promotion workflow: staging → shadow → production via ArgoCD",
-                "KServe (or Triton) serving with GPU autoscaling via Karpenter",
-                "Evidently drift monitoring with alerts tied to retraining triggers",
-                "Cost tracking per model/tenant via OpenCost labels",
-                "Full OTel telemetry + SLOs (p99 latency, error rate, drift score)",
-                "Write a production runbook and architecture doc"
+                "Data parallelism vs model parallelism vs pipeline parallelism",
+                "PyTorch DDP and FSDP basics",
+                "DeepSpeed ZeRO stages and memory optimization motivation",
+                "Ray Train and why Ray is common for distributed ML workloads",
+                "NCCL, network bandwidth, storage throughput, and checkpointing bottlenecks",
+                "Failure modes: stragglers, OOM, bad rendezvous config, slow dataloaders, checkpoint stalls"
               ],
+              practicePrompt: "Answer: 'Training scales poorly from 1 GPU to 8 GPUs. What bottlenecks do you investigate?'",
+              assignment: {
+                title: "Distributed training debug plan",
+                time: "60 min",
+                objective: "Write a diagnostic checklist for a slow or failing distributed training job.",
+                steps: [
+                  "List metrics to capture: GPU utilization, memory, network, storage IO, dataloader time, step time.",
+                  "List logs/configs to inspect: world size, rank, rendezvous endpoint, NCCL settings, checkpoint path.",
+                  "Write a short explanation of DDP vs FSDP."
+                ],
+                pitfalls: [
+                  "More GPUs can make training slower if input pipeline or network is the bottleneck.",
+                  "OOM can come from activations, optimizer state, batch size, or fragmentation.",
+                  "Checkpointing to slow storage can dominate training time."
+                ]
+              },
+              resources: [
+                {
+                  id: "mlops-pytorch-distributed",
+                  title: "PyTorch Distributed Overview",
+                  url: "https://pytorch.org/tutorials/beginner/dist_overview.html",
+                  type: "article",
+                  cost: "free",
+                  author: "PyTorch"
+                },
+                {
+                  id: "mlops-deepspeed",
+                  title: "DeepSpeed Documentation",
+                  url: "https://www.deepspeed.ai/",
+                  type: "article",
+                  cost: "free",
+                  author: "Microsoft"
+                },
+                {
+                  id: "mlops-ray-train",
+                  title: "Ray Train Documentation",
+                  url: "https://docs.ray.io/en/latest/train/train.html",
+                  type: "article",
+                  cost: "free",
+                  author: "Anyscale/Ray"
+                }
+              ]
+            },
+            {
+              id: "mlops-w2-day11",
+              type: "day",
+              title: "Day 11: Ray, KubeRay, Kueue & Volcano",
+              shortTitle: "Ray & Batch Scheduling",
+              dayLabel: "Day 11",
+              description: "The kAIgentic JD explicitly mentions Ray/KubeRay, Argo, Kueue, and Volcano. Learn how distributed jobs are scheduled, queued, autoscaled, and isolated on Kubernetes.",
+              concepts: [
+                "Ray cluster: head node, worker nodes, autoscaling, runtime environments",
+                "KubeRay operator and RayJob/RayService concepts",
+                "Batch scheduling vs service scheduling",
+                "Kueue: queueing, quotas, cohorts, admission control for batch workloads",
+                "Volcano: gang scheduling and ML/HPC batch workload support",
+                "Common platform problem: fair GPU sharing across teams"
+              ],
+              practicePrompt: "Explain when you would use Kubernetes Jobs, RayJob, Argo Workflow, Kueue, or Volcano.",
+              assignment: {
+                title: "Design a GPU job queue",
+                time: "75 min",
+                objective: "Design a shared GPU training platform for three data science teams with quotas and queued jobs.",
+                steps: [
+                  "Define namespaces, quotas, and queue names.",
+                  "Describe how jobs are admitted when GPUs are scarce.",
+                  "Add one priority rule and one fairness rule.",
+                  "Write the failure mode when a team submits too many jobs."
+                ],
+                pitfalls: [
+                  "Without queueing, GPU clusters become first-come-first-served and hard to govern.",
+                  "Gang scheduling matters when a distributed job needs all workers together.",
+                  "Autoscaling GPU nodes is slower and more expensive than CPU autoscaling."
+                ]
+              },
+              resources: [
+                {
+                  id: "mlops-kuberay",
+                  title: "KubeRay Documentation",
+                  url: "https://docs.ray.io/en/latest/cluster/kubernetes/index.html",
+                  type: "article",
+                  cost: "free",
+                  author: "Ray"
+                },
+                {
+                  id: "mlops-kueue",
+                  title: "Kueue Documentation",
+                  url: "https://kueue.sigs.k8s.io/",
+                  type: "article",
+                  cost: "free",
+                  author: "Kubernetes SIG Scheduling"
+                },
+                {
+                  id: "mlops-volcano",
+                  title: "Volcano Documentation",
+                  url: "https://volcano.sh/en/docs/",
+                  type: "article",
+                  cost: "free",
+                  author: "Volcano"
+                }
+              ]
+            },
+            {
+              id: "mlops-w2-day12",
+              type: "day",
+              title: "Day 12: Kubeflow, Argo Workflows & JupyterHub",
+              shortTitle: "ML Platform Tools",
+              dayLabel: "Day 12",
+              description: "The JDs mention Kubeflow, Argo/Airflow, MLflow, and JupyterHub. Learn the platform pattern: self-service notebooks, repeatable pipelines, experiment tracking, and controlled promotion.",
+              concepts: [
+                "Kubeflow components at a high level: pipelines, notebooks, training operators, model serving",
+                "Argo Workflows as Kubernetes-native workflow execution",
+                "JupyterHub for self-service data science environments",
+                "Pipeline steps: data validation, training, evaluation, registration, deployment",
+                "Artifact passing, parameterization, caching, and retries",
+                "Multi-team platform concerns: RBAC, namespaces, quotas, templates, golden paths"
+              ],
+              practicePrompt: "Answer: 'How would you build a self-service ML platform for data scientists without giving everyone cluster-admin?'",
+              assignment: {
+                title: "Design a self-service ML platform",
+                time: "90 min",
+                objective: "Create a platform design with notebooks, pipelines, MLflow, artifact storage, and deployment controls.",
+                steps: [
+                  "Draw the user workflow from notebook experiment to production deployment.",
+                  "Define namespace/RBAC boundaries.",
+                  "List required templates: training job, pipeline, model service, dashboard.",
+                  "Define who approves production promotion."
+                ],
+                pitfalls: [
+                  "Self-service does not mean no guardrails.",
+                  "Notebook environments need reproducibility and dependency control.",
+                  "Interviewers expect platform thinking: templates, quotas, and golden paths."
+                ]
+              },
+              resources: [
+                {
+                  id: "mlops-kubeflow",
+                  title: "Kubeflow Documentation",
+                  url: "https://www.kubeflow.org/docs/",
+                  type: "article",
+                  cost: "free",
+                  author: "Kubeflow"
+                },
+                {
+                  id: "mlops-argo-workflows",
+                  title: "Argo Workflows Documentation",
+                  url: "https://argo-workflows.readthedocs.io/",
+                  type: "article",
+                  cost: "free",
+                  author: "Argo"
+                },
+                {
+                  id: "mlops-jupyterhub",
+                  title: "JupyterHub Documentation",
+                  url: "https://jupyterhub.readthedocs.io/",
+                  type: "article",
+                  cost: "free",
+                  author: "Jupyter"
+                }
+              ]
+            },
+            {
+              id: "mlops-w2-day13",
+              type: "day",
+              title: "Day 13: Data Pipelines, Quality & Feature/Vector Stores",
+              shortTitle: "Data Quality & Stores",
+              dayLabel: "Day 13",
+              description: "The JDs emphasize data engineering, data quality, schema management, feature stores, vector databases, and document AI pipelines. Learn the minimum production patterns.",
+              concepts: [
+                "Data validation: schema, nulls, ranges, distributions, freshness, duplicates",
+                "Training-serving skew and how it appears in production",
+                "Batch pipelines with Airflow/Argo and streaming/event pipelines with Kafka/SQS",
+                "Feature stores: offline store, online store, point-in-time correctness",
+                "Vector stores for retrieval systems: pgvector, Pinecone, Weaviate",
+                "Document AI ingestion: extraction, chunking, metadata, retries, dead-letter queues"
+              ],
+              practicePrompt: "Answer: 'A model suddenly performs poorly but the service is healthy. What do you check?'",
+              assignment: {
+                title: "Add data quality gates",
+                time: "75 min",
+                objective: "Design validation checks that run before training and before batch inference.",
+                steps: [
+                  "Define five schema or quality checks.",
+                  "Define one drift or distribution check.",
+                  "Define what happens on validation failure.",
+                  "Add a dead-letter queue plan for bad documents or records."
+                ],
+                pitfalls: [
+                  "Schema validity does not guarantee model usefulness.",
+                  "Feature leakage and training-serving skew are common interview topics.",
+                  "Vector DB issues often come from bad chunking or metadata, not the DB itself."
+                ]
+              },
+              resources: [
+                {
+                  id: "mlops-gx",
+                  title: "Great Expectations Documentation",
+                  url: "https://docs.greatexpectations.io/",
+                  type: "article",
+                  cost: "free",
+                  author: "Great Expectations"
+                },
+                {
+                  id: "mlops-feast",
+                  title: "Feast Documentation",
+                  url: "https://docs.feast.dev/",
+                  type: "article",
+                  cost: "free",
+                  author: "Feast"
+                },
+                {
+                  id: "mlops-pgvector",
+                  title: "pgvector",
+                  url: "https://github.com/pgvector/pgvector",
+                  type: "github",
+                  cost: "free",
+                  author: "pgvector"
+                }
+              ]
+            },
+            {
+              id: "mlops-w2-project",
+              type: "project",
+              title: "Project #2 - GPU ML Platform Design",
+              shortTitle: "GPU Platform Design",
+              dayLabel: "Day 14",
+              isProject: true,
+              projectNumber: 2,
+              description: "Create the architecture and manifests for a shared GPU ML platform using Kubernetes, GPU scheduling, Ray/KubeRay, MLflow, and queued training workloads.",
+              concepts: [
+                "GPU node pool with labels, taints, and tolerations",
+                "NVIDIA device plugin or GPU Operator",
+                "Ray/KubeRay training workload path",
+                "MLflow experiment and registry path",
+                "Kueue/Volcano style quota and queueing model",
+                "Dashboard metrics: GPU utilization, memory, queue time, job success rate"
+              ],
+              practicePrompt: "Present the platform in 5 minutes as if the interviewer asked: 'How would you build distributed training infrastructure on EKS?'",
+              assignment: {
+                title: "Build an interview architecture packet",
+                time: "2-3 hours",
+                objective: "Prepare a diagram, core YAML snippets, and a troubleshooting checklist for a GPU training platform.",
+                steps: [
+                  "Draw platform components and data/artifact flow.",
+                  "Write sample GPU Job or RayJob YAML.",
+                  "Write a GPU scheduling troubleshooting checklist.",
+                  "Add cost controls: quotas, idle GPU alerts, and scale-down policy."
+                ],
+                pitfalls: [
+                  "Interviewers may ask what breaks first at scale: queueing, storage throughput, network, or GPU availability.",
+                  "Be ready to explain GPU underutilization with evidence, not guesses."
+                ]
+              },
               resources: []
             }
           ]
         },
-        // -------------------------------------------------
-        // WEEK 5: Optional Post-30-Day Interview Readiness
-        // -------------------------------------------------
         {
-          id: "do-week-5",
-          title: "Week 5",
-          subtitle: "Optional Interview Extension",
-          days: "After Day 30",
-          goal: "Optional extension after the 30-day core: close interview-critical gaps in Linux troubleshooting, live-coding, system design, and behavioral/negotiation prep.",
+          id: "mlops-week-3",
+          title: "Week 3",
+          subtitle: "Model Serving, LLMOps & Observability",
+          days: "Days 15-21",
+          goal: "Cover the serving and LLMOps requirements from the JDs: KServe/Seldon/FastAPI, vLLM/TGI/Ollama, async queues, model gateways, guardrails, observability, drift, and cost.",
           nodes: [
             {
-              id: "do-w5-day30",
+              id: "mlops-w3-day15",
               type: "day",
-              title: "Day 30: Linux Internals, Performance & Troubleshooting",
-              shortTitle: "Linux Troubleshooting",
-              dayLabel: "Day 30",
-              description: "Almost every senior SRE/DevOps loop has a 'the service is slow, debug it live' round. You need fluency with the Linux performance toolkit AND a mental framework (USE/RED/TSA) that tells you which tool to reach for first. This day drills both.",
+              title: "Day 15: Model Serving Patterns",
+              shortTitle: "Model Serving",
+              dayLabel: "Day 15",
+              description: "Learn serving choices that appear in interviews: FastAPI, KServe, Seldon, BentoML, batch inference, real-time APIs, canary, shadow, and blue/green.",
               concepts: [
-                "Methodologies: USE (Utilization/Saturation/Errors) for resources, RED (Rate/Errors/Duration) for services, TSA (Thread State Analysis) for process-level",
-                "Brendan Gregg's 60-second performance checklist — uptime, dmesg, vmstat, mpstat, pidstat, iostat, free, sar, top in order",
-                "CPU tools: top, htop, mpstat, pidstat, perf top, perf record/report, flamegraphs",
-                "Memory tools: free, vmstat, pmap, smem, /proc/meminfo, OOM killer logs, THP (transparent huge pages) gotchas, swappiness",
-                "I/O tools: iostat -xz 1, iotop, biosnoop (eBPF), fio for benchmarking, understanding disk queue depth",
-                "Network tools: ss -tunap (modern netstat), tcpdump filters, conntrack -L, iptables -L vs nftables, mtr, dig, openssl s_client",
-                "Tracing: strace -p, ltrace, perf trace, bpftrace one-liners (every senior should know 10 cold)",
-                "Container internals: Linux namespaces (PID, net, mnt, ipc, uts, user, cgroup), cgroups v2, how runc actually works",
-                "systemd deep dive: units, targets, timers, journalctl filters, systemctl edit, drop-ins, slices",
-                "File systems: ext4 vs XFS vs ZFS tradeoffs, page cache, dirty_ratio, fsync semantics, rotational vs SSD considerations",
-                "Drill scenario: 'p99 latency spiked 10x, the service is hot, you have 10 minutes' — run through which commands you type first and why"
+                "Real-time serving vs batch inference vs async inference",
+                "FastAPI for custom services and KServe/Seldon for Kubernetes-native model serving",
+                "Autoscaling based on QPS, latency, queue length, CPU/GPU utilization",
+                "Canary, blue/green, shadow traffic, and model rollback",
+                "Model warmup, cold start, artifact download, and readiness",
+                "Common SLOs: p95 latency, error rate, availability, cost per prediction"
               ],
-              practicePrompt: "Set a timer for 10 minutes. Given only SSH access to a VM, figure out why a Go service is eating 95% CPU. Script yourself a runbook: which tools do you run in what order, and what do you look for in each output?",
+              practicePrompt: "Answer: 'When would you choose KServe over a custom FastAPI deployment?'",
+              assignment: {
+                title: "Serving tradeoff matrix",
+                time: "60 min",
+                objective: "Compare FastAPI, KServe, Seldon, and batch jobs for four serving scenarios.",
+                steps: [
+                  "Score each option for control, speed, platform complexity, autoscaling, and rollback.",
+                  "Pick one option for a low-latency API and one for nightly batch inference.",
+                  "Define the production SLOs."
+                ],
+                pitfalls: [
+                  "KServe does not remove the need to understand containers, metrics, and rollout safety.",
+                  "Batch inference failures need retry/idempotency semantics.",
+                  "Shadow traffic may not give immediate labels for quality comparison."
+                ]
+              },
               resources: [
                 {
-                  id: "systems-performance-gregg",
-                  title: "Systems Performance (2nd Edition)",
-                  url: "https://www.brendangregg.com/systems-performance-2nd-edition-book.html",
-                  type: "book",
-                  cost: "paid",
-                  author: "Brendan Gregg",
-                  note: "The definitive book. Read chapters 2, 6, 7, 8, 10 minimum"
-                },
-                {
-                  id: "bpf-performance-tools",
-                  title: "BPF Performance Tools",
-                  url: "http://www.brendangregg.com/bpf-performance-tools-book.html",
-                  type: "book",
-                  cost: "paid",
-                  author: "Brendan Gregg"
-                },
-                {
-                  id: "gregg-blog",
-                  title: "Brendan Gregg's blog + Linux performance tools map",
-                  url: "https://www.brendangregg.com/linuxperf.html",
+                  id: "mlops-kserve",
+                  title: "KServe Documentation",
+                  url: "https://kserve.github.io/website/latest/",
                   type: "article",
                   cost: "free",
-                  note: "The famous 'Linux Performance Observability Tools' diagram lives here"
+                  author: "KServe"
                 },
                 {
-                  id: "netflix-60s",
-                  title: "Linux Performance Analysis in 60 seconds (Netflix)",
-                  url: "https://netflixtechblog.com/linux-performance-analysis-in-60-000-milliseconds-accc10403c55",
+                  id: "mlops-seldon",
+                  title: "Seldon Core Documentation",
+                  url: "https://docs.seldon.ai/",
                   type: "article",
                   cost: "free",
-                  author: "Brendan Gregg / Netflix",
-                  note: "Memorize this checklist verbatim"
+                  author: "Seldon"
                 },
                 {
-                  id: "tlpi",
-                  title: "The Linux Programming Interface",
-                  url: "https://man7.org/tlpi/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Michael Kerrisk",
-                  note: "Syscall-level reference — the internals bible"
-                },
-                {
-                  id: "julia-evans",
-                  title: "Julia Evans' zines (debugging, Linux, networking)",
-                  url: "https://wizardzines.com/",
-                  type: "article",
-                  cost: "paid",
-                  author: "Julia Evans",
-                  note: "Approachable PDFs; many are free on the blog"
-                },
-                {
-                  id: "bpftrace-onliners",
-                  title: "bpftrace One-Liners",
-                  url: "https://github.com/iovisor/bpftrace/blob/master/docs/tutorial_one_liners.md",
-                  type: "github",
-                  cost: "free",
-                  note: "Learn 10 of these cold"
-                },
-                {
-                  id: "container-internals",
-                  title: "Container Internals Deep Dive (Ivan Velichko)",
-                  url: "https://iximiuz.com/en/series/container-networking-from-scratch/",
+                  id: "mlops-bentoml",
+                  title: "BentoML Documentation",
+                  url: "https://docs.bentoml.com/",
                   type: "article",
                   cost: "free",
-                  note: "How namespaces + cgroups + runc actually compose a container"
-                },
-                {
-                  id: "flamegraph",
-                  title: "Flamegraphs — Brendan Gregg",
-                  url: "https://www.brendangregg.com/flamegraphs.html",
-                  type: "article",
-                  cost: "free"
+                  author: "BentoML"
                 }
               ]
             },
             {
-              id: "do-w5-day31",
+              id: "mlops-w3-day16",
               type: "day",
-              title: "Day 31: Scripting Mastery — Bash, Python & Go",
-              shortTitle: "Scripting Drills",
-              dayLabel: "Day 31",
-              description: "Live-coding rounds at senior DevOps/MLOps interviews test whether you can write production-quality scripts under time pressure. This is where candidates who 'know about' tools fail; muscle memory wins. Drill actual problems, not tutorials.",
+              title: "Day 16: LLM Serving with vLLM, TGI & Ollama",
+              shortTitle: "LLM Serving",
+              dayLabel: "Day 16",
+              description: "The JDs call out self-hosted LLMs with vLLM, TGI, Ollama, and GPU orchestration. Learn the serving internals that interviewers now test.",
               concepts: [
-                "Bash: strict mode (set -euo pipefail), trap handlers for cleanup on signals, proper quoting, IFS handling",
-                "Bash: parameter expansion (${var:-default}, ${var:?error}, ${var#prefix}, ${var%suffix})",
-                "Bash: arrays (indexed + associative), process substitution, here-strings, mktemp, flock for locking",
-                "Bash: awk for aggregations (not just column printing), sed with safe escaping, xargs -P for parallelism",
-                "Python: argparse/click/typer for CLIs, pathlib over os.path, subprocess with timeout+check_output",
-                "Python: concurrent.futures for parallel API calls, asyncio (async def / await / gather) for I/O-bound work",
-                "Python: boto3 paginators, error handling (ClientError), exponential backoff with tenacity",
-                "Python: structured logging (not print), type hints + mypy strict, pytest + moto/freezegun/responses",
-                "Python: packaging with pyproject.toml, uv or poetry for dependency management",
-                "Go: structure (packages, exports), goroutines/channels/select, sync.WaitGroup, sync.Mutex basics",
-                "Go: error wrapping (%w, errors.Is/As), context for cancellation + timeouts, HTTP client timeouts (the stdlib trap)",
-                "Go: reading a K8s controller — Reconcile pattern, client-go, informers; enough to debug an operator",
-                "Go: building a small CLI with Cobra, table-driven tests, go test -race",
-                "The canonical interview prompts: parse log stream → aggregate errors by service; poll an API, retry with backoff, emit Prometheus metrics; watch K8s pods and alert when any enters CrashLoopBackOff"
+                "vLLM, Text Generation Inference, and Ollama roles",
+                "Continuous batching and why it improves throughput",
+                "KV cache: memory impact, concurrency, context length, and eviction pressure",
+                "Quantization: FP16/BF16/INT8/INT4 tradeoffs",
+                "Speculative decoding, tensor parallelism, and model sharding at a high level",
+                "Throughput vs latency tradeoff for LLM inference"
               ],
-              practicePrompt: "Pick ONE problem and implement it three times — once in Bash, once in Python, once in Go: tail a JSON-lines log file, maintain a rolling 1-minute error rate per service, and POST a Slack alert when it crosses 1%. Each version must handle SIGINT cleanly and unit-test the rate calculation. Time yourself — target: Bash 25 min, Python 35 min, Go 45 min.",
+              practicePrompt: "Answer: 'Why does increasing context length reduce concurrency on the same GPU?'",
+              assignment: {
+                title: "LLM serving sizing exercise",
+                time: "75 min",
+                objective: "Estimate how batch size, context length, and model size affect GPU memory and throughput.",
+                steps: [
+                  "Pick a 7B or 8B model.",
+                  "List memory components: weights, KV cache, activations/overhead.",
+                  "Write how you would test max concurrency safely.",
+                  "Define metrics to track during load testing."
+                ],
+                pitfalls: [
+                  "GPU OOM during LLM serving is often KV cache pressure, not just model weights.",
+                  "Higher batching can improve throughput while hurting tail latency.",
+                  "Quantization saves memory but may affect quality and compatibility."
+                ]
+              },
               resources: [
                 {
-                  id: "pure-bash-bible",
-                  title: "Pure Bash Bible",
-                  url: "https://github.com/dylanaraps/pure-bash-bible",
+                  id: "mlops-vllm",
+                  title: "vLLM Documentation",
+                  url: "https://docs.vllm.ai/",
+                  type: "article",
+                  cost: "free",
+                  author: "vLLM"
+                },
+                {
+                  id: "mlops-tgi",
+                  title: "Text Generation Inference",
+                  url: "https://huggingface.co/docs/text-generation-inference/index",
+                  type: "article",
+                  cost: "free",
+                  author: "Hugging Face"
+                },
+                {
+                  id: "mlops-ollama",
+                  title: "Ollama Documentation",
+                  url: "https://github.com/ollama/ollama/tree/main/docs",
                   type: "github",
                   cost: "free",
-                  note: "37K stars — pure-Bash alternatives to external tools"
-                },
-                {
-                  id: "google-bash-style",
-                  title: "Google's Shell Style Guide",
-                  url: "https://google.github.io/styleguide/shellguide.html",
-                  type: "article",
-                  cost: "free",
-                  author: "Google"
-                },
-                {
-                  id: "shellcheck",
-                  title: "ShellCheck — static analysis for shell scripts",
-                  url: "https://www.shellcheck.net/",
-                  type: "tool",
-                  cost: "free",
-                  note: "Run it on every script you write. Always."
-                },
-                {
-                  id: "defensive-bash",
-                  title: "Defensive BASH Programming",
-                  url: "https://frippertronics.com/posts/defensive_bash_programming.html",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "fluent-python",
-                  title: "Fluent Python (2nd Ed)",
-                  url: "https://www.oreilly.com/library/view/fluent-python-2nd/9781492056348/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Luciano Ramalho",
-                  note: "The book that turns good Python into senior Python"
-                },
-                {
-                  id: "python-concurrency",
-                  title: "Python Concurrency with asyncio",
-                  url: "https://www.manning.com/books/python-concurrency-with-asyncio",
-                  type: "book",
-                  cost: "paid",
-                  author: "Matthew Fowler"
-                },
-                {
-                  id: "real-python",
-                  title: "Real Python — CLI & asyncio tutorials",
-                  url: "https://realpython.com/",
-                  type: "article",
-                  cost: "free-tier",
-                  note: "Highest-quality free Python articles"
-                },
-                {
-                  id: "gopl-book",
-                  title: "The Go Programming Language",
-                  url: "https://www.gopl.io/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Donovan & Kernighan",
-                  note: "The canonical Go book"
-                },
-                {
-                  id: "learning-go",
-                  title: "Learning Go (2nd Ed)",
-                  url: "https://www.oreilly.com/library/view/learning-go-2nd/9781098139285/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Jon Bodner",
-                  note: "Modernized for 1.21+ with generics"
-                },
-                {
-                  id: "go-by-example",
-                  title: "Go by Example",
-                  url: "https://gobyexample.com/",
-                  type: "article",
-                  cost: "free",
-                  note: "Fastest way to get syntax reps"
-                },
-                {
-                  id: "sample-controller-go",
-                  title: "Kubernetes sample-controller (read it)",
-                  url: "https://github.com/kubernetes/sample-controller",
-                  type: "github",
-                  cost: "free",
-                  note: "Read 'controller.go' carefully — it teaches the reconcile pattern"
-                },
-                {
-                  id: "exercism",
-                  title: "Exercism — Bash, Python, Go tracks",
-                  url: "https://exercism.org/",
-                  type: "course",
-                  cost: "free",
-                  note: "Daily reps with mentor feedback"
+                  author: "Ollama"
                 }
               ]
             },
             {
-              id: "do-w5-day32",
+              id: "mlops-w3-day17",
               type: "day",
-              title: "Day 32: System Design — Platform & DevOps Prompts",
-              shortTitle: "System Design (Platform)",
-              dayLabel: "Day 32",
-              description: "You will face a 45-minute whiteboard system design round at every senior+ loop. These are the 8 canonical DevOps/Platform prompts. Prepare all 8 at a 'can talk through for 45 min' depth. The framework matters as much as the content.",
+              title: "Day 17: Async Inference, Queues & Micro-Batching",
+              shortTitle: "Async Inference",
+              dayLabel: "Day 17",
+              description: "AIOps and document AI JDs emphasize SQS/SNS, Kafka, EventBridge, Step Functions, async processing, and micro-batching. Learn how to make slow AI workflows reliable.",
               concepts: [
-                "The 45-minute framework: (1) Clarify — functional + non-functional reqs (2) Capacity estimate — one back-of-envelope calculation out loud (3) High-level diagram: 5-7 boxes with arrows (4) Deep-dive on 2 components (interviewer picks) (5) 2-3 explicit tradeoffs (6) Failure modes + monitoring",
-                "Prompt 1: Multi-tenant CI/CD platform for 500 services — queue sharding, runner pools (ephemeral vs persistent), secrets isolation, artifact caching, per-team quotas, cost attribution",
-                "Prompt 2: Multi-region HA Kubernetes deployment — active-active vs active-passive, data replication (RPO/RTO), DNS failover (Route53 health checks, GSLB), control plane per region, stateful workload patterns",
-                "Prompt 3: Log aggregation pipeline handling 1M events/sec — collection (fluentbit/Vector), buffering (Kafka), parsing, hot/warm/cold storage (Loki/OpenSearch/S3+Athena), query SLOs, cost controls",
-                "Prompt 4: Prometheus-at-scale metrics platform — sharded scrape, remote write, long-term storage (Thanos/Mimir), cardinality control, downsampling, federated queries",
-                "Prompt 5: Centralized secrets management — Vault topology, unseal strategy, auth methods (K8s SA, OIDC), dynamic secrets vs static, rotation, audit to SIEM, break-glass",
-                "Prompt 6: Incident management + on-call platform (PagerDuty-like) — alert routing, escalation ladders, on-call schedules, paging fatigue tracking, postmortem workflow",
-                "Prompt 7: Feature flag service at 100K QPS — evaluation engine, targeting rules, sticky-user vs per-request consistency, client SDK design, kill-switches, audit trail",
-                "Prompt 8: Rate limiter for a multi-tenant API gateway — algorithm tradeoffs (token bucket vs sliding window), Redis vs local+sync, fairness, burst handling, quota per tenant",
-                "Back-of-envelope numbers every senior must know cold: ~100K req/s is 'big', 1 KB avg message, disk seek ~10ms, SSD read ~100μs, RAM read ~100ns, 1 Gbps = 125 MB/s, cross-region RTT ~60-150ms",
-                "Red flags to avoid: jumping to diagram before clarifying, naming tools without justifying, ignoring cost, forgetting to mention monitoring/alerting"
+                "Queue-backed inference for long-running or bursty workloads",
+                "SQS/SNS, Kafka, EventBridge, and Step Functions roles",
+                "Micro-batching: latency/throughput tradeoff",
+                "Idempotency keys, retries, visibility timeout, dead-letter queues",
+                "Backpressure and autoscaling workers based on queue depth",
+                "Document AI pipeline: upload, parse, chunk, embed, infer, store, notify"
               ],
-              practicePrompt: "Pick 2 prompts from the list and do a 45-min whiteboard session for each (use excalidraw.com). Record yourself on video. Play it back — where did you hand-wave? Where were you too slow? Redo weak sections.",
+              practicePrompt: "Answer: 'How do you prevent duplicate processing in a queue-based inference system?'",
+              assignment: {
+                title: "Design async document inference",
+                time: "90 min",
+                objective: "Design an async pipeline for document ingestion and model inference with retries and dead-letter handling.",
+                steps: [
+                  "Draw queue, worker, object storage, metadata DB, and callback/status API.",
+                  "Define retry policy and DLQ behavior.",
+                  "Define autoscaling metric.",
+                  "Define idempotency strategy."
+                ],
+                pitfalls: [
+                  "At-least-once delivery means duplicate work is normal unless you design for idempotency.",
+                  "Visibility timeout must exceed expected processing time or messages can be processed twice.",
+                  "Micro-batching can improve GPU utilization but increases latency."
+                ]
+              },
               resources: [
                 {
-                  id: "sys-design-vol1",
-                  title: "System Design Interview Volume 1",
-                  url: "https://www.amazon.com/System-Design-Interview-insiders-Second/dp/B08CMF2CQF",
-                  type: "book",
-                  cost: "paid",
-                  author: "Alex Xu",
-                  note: "The canonical book for ALL system design interviews"
-                },
-                {
-                  id: "sys-design-vol2",
-                  title: "System Design Interview Volume 2",
-                  url: "https://www.amazon.com/System-Design-Interview-Insiders-Guide/dp/1736049119",
-                  type: "book",
-                  cost: "paid",
-                  author: "Alex Xu",
-                  note: "Advanced — distributed systems, payment systems, feed"
-                },
-                {
-                  id: "bytebytego-newsletter",
-                  title: "ByteByteGo Newsletter",
-                  url: "https://blog.bytebytego.com/",
-                  type: "article",
-                  cost: "free-tier",
-                  author: "Alex Xu"
-                },
-                {
-                  id: "system-design-primer",
-                  title: "The System Design Primer (250K stars)",
-                  url: "https://github.com/donnemartin/system-design-primer",
-                  type: "github",
-                  cost: "free",
-                  note: "Canonical free resource, covers all fundamentals"
-                },
-                {
-                  id: "high-scalability",
-                  title: "High Scalability blog — real case studies",
-                  url: "http://highscalability.com/",
+                  id: "mlops-sqs",
+                  title: "Amazon SQS Documentation",
+                  url: "https://docs.aws.amazon.com/sqs/",
                   type: "article",
                   cost: "free",
-                  note: "How Uber/Netflix/Stripe/etc actually built their systems"
+                  author: "AWS"
                 },
                 {
-                  id: "uber-eng",
-                  title: "Uber Engineering Blog",
-                  url: "https://www.uber.com/blog/engineering/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "netflix-tech",
-                  title: "Netflix Tech Blog",
-                  url: "https://netflixtechblog.com/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "stripe-eng",
-                  title: "Stripe Engineering Blog",
-                  url: "https://stripe.com/blog/engineering",
+                  id: "mlops-step-functions",
+                  title: "AWS Step Functions Documentation",
+                  url: "https://docs.aws.amazon.com/step-functions/",
                   type: "article",
                   cost: "free",
-                  note: "Exceptional technical writing — reliability posts are gold"
+                  author: "AWS"
                 },
                 {
-                  id: "aosa",
-                  title: "The Architecture of Open Source Applications",
-                  url: "https://aosabook.org/",
-                  type: "book",
+                  id: "mlops-kafka",
+                  title: "Apache Kafka Documentation",
+                  url: "https://kafka.apache.org/documentation/",
+                  type: "article",
                   cost: "free",
-                  note: "Free book explaining 25+ real systems (nginx, Mercurial, etc.)"
-                },
-                {
-                  id: "excalidraw",
-                  title: "Excalidraw — the whiteboard interviewers use",
-                  url: "https://excalidraw.com/",
-                  type: "tool",
-                  cost: "free",
-                  note: "Practice diagramming here, not Miro"
-                },
-                {
-                  id: "hired-in-tech",
-                  title: "Hired In Tech — System Design Course",
-                  url: "https://www.hiredintech.com/system-design",
-                  type: "course",
-                  cost: "free",
-                  note: "The RESHADED framework explained clearly"
+                  author: "Apache Kafka"
                 }
               ]
             },
             {
-              id: "do-w5-day33",
+              id: "mlops-w3-day18",
               type: "day",
-              title: "Day 33: System Design — MLOps & ML Systems Prompts",
-              shortTitle: "System Design (MLOps)",
-              dayLabel: "Day 33",
-              description: "ML system design is the single biggest differentiator for senior MLOps roles in 2026. These 6 prompts cover 90% of what gets asked. The training-serving skew question in particular gets asked in every serious MLOps loop.",
+              title: "Day 18: LLM Gateways, Routing, Guardrails & Governance",
+              shortTitle: "LLM Gateways",
+              dayLabel: "Day 18",
+              description: "The AIOps JD mentions LiteLLM/Portkey, model governance, guardrails, usage controls, and hallucination monitoring. Learn the gateway and governance layer.",
               concepts: [
-                "Prompt 1: ML training platform for 200 data scientists — shared GPU scheduling (K8s + Volcano/Kueue), Jupyter vs job submission, experiment tracking (MLflow), artifact store, fairness/quotas, cost attribution per team",
-                "Prompt 2: Online feature store at 50K QPS, p99 < 10ms — online DB choice (Redis vs DynamoDB vs Cassandra), offline → online backfill, point-in-time correctness, schema evolution, streaming feature writes, eventual consistency tradeoffs",
-                "Prompt 3: Model serving platform for 100+ models — multi-model hosting (Triton or KServe ModelMesh), request routing, autoscaling per model, cold starts, GPU sharing (MIG, time-slicing), canary + shadow deployments, A/B testing infra",
-                "Prompt 4: Real-time ML monitoring + automated retraining — feature/prediction/performance drift signals, ground-truth delay handling, alert thresholds, automated retraining triggers, human-in-the-loop approval gates",
-                "Prompt 5: Multi-tenant LLM application platform — model routing (simple → expensive), semantic caching, prompt versioning + A/B, per-tenant cost guardrails, rate limiting, PII/PHI scrubbing, observability (latency/quality/cost), fine-tuning infra",
-                "Prompt 6: Recommendation system serving 100M users — candidate generation (vector search at scale, ANN), ranking (lightweight model), feature retrieval from online store, caching strategy, cold-start handling, offline eval harness",
-                "Training-serving skew — the #1 MLOps question: point-in-time features, same transformation code path, feature store as single source of truth",
-                "Model promotion workflow: offline eval → shadow deploy → canary → full rollout → monitor → rollback criteria",
-                "The ML-specific tradeoffs: batch vs online, managed (SageMaker/Vertex) vs self-hosted, build vs buy feature store, realtime ML vs near-realtime ML"
+                "LLM gateway responsibilities: routing, auth, rate limits, budgets, audit logs",
+                "Model routing: cost, latency, quality, fallback, and tenant policy",
+                "LiteLLM and Portkey style control planes",
+                "Guardrails: prompt injection, PII, unsafe output, hallucination checks",
+                "Responsible AI basics: explainability, bias/fairness monitoring, model validation",
+                "Audit requirements in regulated or client-facing environments"
               ],
-              practicePrompt: "Pick Prompts 2 and 3. Do a 45-min whiteboard session for each. For the feature store, specifically address: how do you guarantee training-serving skew is impossible? For model serving, specifically address: how do you handle a request that needs a model currently cold on disk?",
+              practicePrompt: "Answer: 'What belongs in an LLM gateway instead of every application team reimplementing it?'",
+              assignment: {
+                title: "Design an LLM gateway policy",
+                time: "60 min",
+                objective: "Define routing, budget, logging, and guardrail policies for three internal AI applications.",
+                steps: [
+                  "Define model routing rules.",
+                  "Add per-team budget and rate limits.",
+                  "List audit fields to log.",
+                  "Define one PII and one prompt-injection guardrail."
+                ],
+                pitfalls: [
+                  "Guardrails reduce risk but do not prove correctness.",
+                  "Do not log sensitive prompts without retention and access policies.",
+                  "Fallback models can change answer quality and must be evaluated."
+                ]
+              },
               resources: [
                 {
-                  id: "ml-system-design-book",
-                  title: "Machine Learning System Design Interview",
-                  url: "https://www.amazon.com/Machine-Learning-System-Design-Interview/dp/1736049127",
-                  type: "book",
-                  cost: "paid",
-                  author: "Ali Aminian & Alex Xu",
-                  note: "Indispensable for MLOps interviews"
+                  id: "mlops-litellm",
+                  title: "LiteLLM Documentation",
+                  url: "https://docs.litellm.ai/",
+                  type: "article",
+                  cost: "free",
+                  author: "LiteLLM"
                 },
                 {
-                  id: "dmls-book",
-                  title: "Designing Machine Learning Systems",
-                  url: "https://www.oreilly.com/library/view/designing-machine-learning/9781098107956/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Chip Huyen",
-                  note: "Re-read with interview framing — every chapter maps to a design prompt"
+                  id: "mlops-portkey",
+                  title: "Portkey Documentation",
+                  url: "https://portkey.ai/docs",
+                  type: "article",
+                  cost: "free",
+                  author: "Portkey"
                 },
                 {
-                  id: "ml-interviews-book",
-                  title: "ml-interviews-book (Chip Huyen, free)",
-                  url: "https://github.com/chiphuyen/ml-interviews-book",
+                  id: "mlops-owasp-llm",
+                  title: "OWASP Top 10 for LLM Applications",
+                  url: "https://owasp.org/www-project-top-10-for-large-language-model-applications/",
+                  type: "article",
+                  cost: "free",
+                  author: "OWASP"
+                }
+              ]
+            },
+            {
+              id: "mlops-w3-day19",
+              type: "day",
+              title: "Day 19: Observability for ML, LLMs & GPUs",
+              shortTitle: "AI Observability",
+              dayLabel: "Day 19",
+              description: "The JDs repeatedly mention Prometheus, Grafana, OpenTelemetry, X-Ray, drift, latency, token usage, inference quality, and GPU utilization. Build a metrics taxonomy you can explain.",
+              concepts: [
+                "System metrics: latency, error rate, saturation, availability, queue depth",
+                "Model metrics: accuracy, drift, data quality, calibration, business KPIs",
+                "LLM metrics: tokens, cost, context length, refusal rate, hallucination signal, eval score",
+                "GPU metrics: utilization, memory, power, temperature, SM occupancy, idle allocation",
+                "OpenTelemetry traces across API, queue, worker, vector DB, and model server",
+                "Alert design: symptom alerts, SLO burn rate, and actionable runbooks"
+              ],
+              practicePrompt: "Answer: 'What dashboard would you build for a production LLM inference service?'",
+              assignment: {
+                title: "Build an observability checklist",
+                time: "75 min",
+                objective: "Define dashboards and alerts for real-time model serving, async document inference, and GPU training.",
+                steps: [
+                  "List golden signals for each workload.",
+                  "Define three Prometheus-style alert rules in plain English.",
+                  "Add trace spans for API, queue, model call, and storage.",
+                  "Define drift and quality monitoring inputs."
+                ],
+                pitfalls: [
+                  "Do not alert only on CPU for GPU workloads.",
+                  "Model quality often has delayed labels, so use proxy metrics and offline evals.",
+                  "High average latency can hide p95/p99 failures."
+                ]
+              },
+              resources: [
+                {
+                  id: "mlops-opentelemetry",
+                  title: "OpenTelemetry Documentation",
+                  url: "https://opentelemetry.io/docs/",
+                  type: "article",
+                  cost: "free",
+                  author: "OpenTelemetry"
+                },
+                {
+                  id: "mlops-prometheus",
+                  title: "Prometheus Documentation",
+                  url: "https://prometheus.io/docs/introduction/overview/",
+                  type: "article",
+                  cost: "free",
+                  author: "Prometheus"
+                },
+                {
+                  id: "mlops-dcgm-exporter",
+                  title: "NVIDIA DCGM Exporter",
+                  url: "https://github.com/NVIDIA/dcgm-exporter",
+                  type: "github",
+                  cost: "free",
+                  author: "NVIDIA"
+                },
+                {
+                  id: "mlops-evidently",
+                  title: "Evidently Documentation",
+                  url: "https://docs.evidentlyai.com/",
+                  type: "article",
+                  cost: "free",
+                  author: "Evidently"
+                }
+              ]
+            },
+            {
+              id: "mlops-w3-day20",
+              type: "day",
+              title: "Day 20: AWS/GCP AI Infrastructure & Security",
+              shortTitle: "Cloud AI Infra",
+              dayLabel: "Day 20",
+              description: "The JDs mention AWS heavily: EC2, EKS, S3, Lambda, Bedrock, SageMaker, API Gateway, EventBridge, SQS/SNS, KMS, IAM, VPC endpoints, and CloudTrail. Learn the interview-level architecture.",
+              concepts: [
+                "AWS AI stack: EKS, EC2 GPU nodes, S3, ECR, SQS/SNS, Lambda, Step Functions, Bedrock, SageMaker",
+                "GCP equivalents: GKE, Cloud Storage, Pub/Sub, Vertex AI, Cloud Run",
+                "Terraform or CloudFormation for repeatable infrastructure",
+                "IAM least privilege, KMS encryption, VPC endpoints, private networking",
+                "CloudTrail/audit logs and production access controls",
+                "Cost controls: right-sizing, autoscaling, spot/preemptible instances, idle GPU alerts"
+              ],
+              practicePrompt: "Answer: 'How would you secure an ML platform running on AWS EKS?'",
+              assignment: {
+                title: "Design secure AWS LLM infrastructure",
+                time: "90 min",
+                objective: "Create an AWS architecture for self-hosted LLM inference with private networking, queues, storage, and audit controls.",
+                steps: [
+                  "Place API, queue, workers, model server, S3, and observability components.",
+                  "Define IAM roles and least-privilege boundaries.",
+                  "Add KMS, VPC endpoints, and CloudTrail.",
+                  "Add cost controls for GPU nodes."
+                ],
+                pitfalls: [
+                  "Do not give pods broad node-instance-role permissions; use workload identity where possible.",
+                  "Private networking affects access to model artifacts and package repositories.",
+                  "GPU spot interruptions need graceful drain or checkpointing."
+                ]
+              },
+              resources: [
+                {
+                  id: "mlops-eks",
+                  title: "Amazon EKS Documentation",
+                  url: "https://docs.aws.amazon.com/eks/",
+                  type: "article",
+                  cost: "free",
+                  author: "AWS"
+                },
+                {
+                  id: "mlops-sagemaker",
+                  title: "Amazon SageMaker Documentation",
+                  url: "https://docs.aws.amazon.com/sagemaker/",
+                  type: "article",
+                  cost: "free",
+                  author: "AWS"
+                },
+                {
+                  id: "mlops-terraform",
+                  title: "Terraform Documentation",
+                  url: "https://developer.hashicorp.com/terraform/docs",
+                  type: "article",
+                  cost: "free",
+                  author: "HashiCorp"
+                }
+              ]
+            },
+            {
+              id: "mlops-w3-project",
+              type: "project",
+              title: "Project #3 - Production LLMOps Serving Platform",
+              shortTitle: "LLMOps Serving Platform",
+              dayLabel: "Day 21",
+              isProject: true,
+              projectNumber: 3,
+              description: "Design and partially implement a production LLM serving platform with self-hosted inference, async queues, gateway policy, observability, and GPU cost controls.",
+              concepts: [
+                "vLLM or TGI model server behind a gateway",
+                "FastAPI status API for async jobs",
+                "SQS/Kafka style queue and worker pattern",
+                "Prometheus/Grafana and OpenTelemetry tracing design",
+                "GPU dashboard with utilization, memory, queue depth, and cost",
+                "Guardrails, audit logs, model routing, and fallback policy"
+              ],
+              practicePrompt: "Present this as a 6-minute system design answer for an AIOps or AI Infrastructure Engineer interview.",
+              assignment: {
+                title: "LLMOps interview packet",
+                time: "3-4 hours",
+                objective: "Prepare a system design document with architecture, metrics, failure modes, security controls, and scaling plan.",
+                steps: [
+                  "Draw request path, async path, and observability path.",
+                  "Define autoscaling signals for API, queue workers, and GPU model server.",
+                  "Write a runbook for GPU OOM, latency spike, bad model output, and queue backlog.",
+                  "Add cost and security controls."
+                ],
+                pitfalls: [
+                  "Interviewers will ask how you know whether the bottleneck is API, queue, GPU, storage, or downstream service.",
+                  "Be ready to explain how batching helps throughput and hurts latency.",
+                  "Do not ignore governance: budgets, audit logs, and model access policy matter."
+                ]
+              },
+              resources: []
+            }
+          ]
+        },
+        {
+          id: "mlops-week-4",
+          title: "Week 4",
+          subtitle: "Interview Systems, Debugging & Portfolio",
+          days: "Days 22-30",
+          goal: "Convert skills into interview performance: system design, debugging drills, behavioral stories, portfolio packaging, and focused mock interviews.",
+          nodes: [
+            {
+              id: "mlops-w4-day22-23",
+              type: "day",
+              title: "Day 22-23: MLOps System Design Drills",
+              shortTitle: "System Design Drills",
+              dayLabel: "Day 22-23",
+              description: "Practice the exact architecture prompts these JDs imply: distributed training platform, document AI platform, model-serving platform, and ML CI/CD platform.",
+              concepts: [
+                "Design an end-to-end ML platform for data scientists",
+                "Design self-hosted LLM inference on Kubernetes with GPU autoscaling",
+                "Design async document AI processing with queues and observability",
+                "Design model CI/CD with validation gates and canary rollout",
+                "Discuss tradeoffs: managed service vs Kubernetes, FastAPI vs KServe, Ray vs plain Jobs",
+                "Make every design measurable: latency, throughput, utilization, cost, reliability"
+              ],
+              practicePrompt: "Pick one design prompt and record yourself answering it in 8 minutes using a diagram.",
+              assignment: {
+                title: "Four design one-pagers",
+                time: "2-3 hours",
+                objective: "Write one-page designs for the four highest-probability interview scenarios.",
+                steps: [
+                  "For each design, include requirements, components, data flow, scaling, observability, security, and failure handling.",
+                  "Add three tradeoffs per design.",
+                  "Add two interviewer follow-up questions per design."
+                ],
+                pitfalls: [
+                  "Do not start with tools. Start with workload shape and requirements.",
+                  "Always explain how deployment, rollback, and monitoring work.",
+                  "If GPUs are involved, discuss utilization and queueing."
+                ]
+              },
+              resources: [
+                {
+                  id: "mlops-system-design-primer",
+                  title: "Machine Learning System Design",
+                  url: "https://github.com/chiphuyen/machine-learning-systems-design",
                   type: "github",
                   cost: "free",
                   author: "Chip Huyen"
-                },
-                {
-                  id: "eugene-yan-blog",
-                  title: "Eugene Yan's blog — real ML case studies",
-                  url: "https://eugeneyan.com/",
-                  type: "article",
-                  cost: "free",
-                  note: "Case studies from Amazon, Toyota, etc. with architecture depth"
-                },
-                {
-                  id: "applied-ml",
-                  title: "applied-ml (curated papers & blog posts)",
-                  url: "https://github.com/eugeneyan/applied-ml",
-                  type: "github",
-                  cost: "free",
-                  note: "Curated real-world ML case studies from tech companies"
-                },
-                {
-                  id: "stanford-mlsys",
-                  title: "Stanford MLSys Seminar — YouTube",
-                  url: "https://www.youtube.com/@StanfordMLSys",
-                  type: "video",
-                  cost: "free",
-                  note: "Weekly talks on how companies build ML platforms"
-                },
-                {
-                  id: "mlops-community-podcast",
-                  title: "MLOps Community Podcast",
-                  url: "https://mlops.community/podcast/",
-                  type: "article",
-                  cost: "free",
-                  note: "Treat episode descriptions as case study summaries"
-                },
-                {
-                  id: "uber-michelangelo",
-                  title: "Uber's Michelangelo ML platform (multi-part posts)",
-                  url: "https://www.uber.com/blog/michelangelo-machine-learning-platform/",
-                  type: "article",
-                  cost: "free",
-                  author: "Uber",
-                  note: "Read the original + all follow-ups — canonical reference architecture"
-                },
-                {
-                  id: "netflix-metaflow-blog",
-                  title: "Netflix — Metaflow & ML infrastructure posts",
-                  url: "https://netflixtechblog.com/tagged/machine-learning",
-                  type: "article",
-                  cost: "free"
                 }
               ]
             },
             {
-              id: "do-w5-day34",
+              id: "mlops-w4-day24-25",
               type: "day",
-              title: "Day 34: Behavioral, Negotiation & Portfolio",
-              shortTitle: "Behavioral & Negotiation",
-              dayLabel: "Day 34",
-              description: "The last 10% that determines whether you get the offer you want. At senior+ levels, behavioral is scored as rigorously as technical rounds. Negotiation pays for itself — 30 minutes of prep typically yields 10-30% more total comp. This is not optional work.",
+              title: "Day 24-25: Debugging and Incident Drills",
+              shortTitle: "Debugging Drills",
+              dayLabel: "Day 24-25",
+              description: "Interviewers often test how you debug production issues. Practice crisp, layered debugging for Kubernetes, ML pipelines, GPU workloads, queues, and model quality.",
               concepts: [
-                "Behavioral framework: every answer in STAR+ format (Situation / Task / Action / Result / + Reflection — what you learned, what you'd do differently)",
-                "Prepare 8 stories covering: (1) Cross-team technical initiative driven without formal authority (2) Major outage — leading response, decisions, postmortem follow-through (3) Disagreement with VP/senior — your position, how you escalated, outcome (4) Mentoring a mid → senior engineer over 6+ months (5) A wrong technical call + what you learned (6) Influencing a team to adopt a better practice (7) Prioritizing when 4 things are on fire (8) A political win — navigating org dynamics to ship",
-                "Every story should have quantified impact: MTTR reduced from X to Y, cost saved $N, toil hours/week reduced, SLO error budget preserved",
-                "Rehearse stories aloud (not in your head) — record yourself, play back, trim each to 3 minutes",
-                "Rule: every answer ends with 'and here's what I learned / what we kept'",
-                "Negotiation — golden rules: never give a number first; get everything in writing before negotiating; total comp framing (base + equity over 4yr + signon + target bonus); multi-offer as leverage is powerful (ethical — only if real); 7-day rule — don't respond to verbal offers",
-                "Know your market number: levels.fyi + Blind + H1B data; calibrate by level, location, company stage, domain (AI premium applies in 2026)",
-                "The recruiter dynamic: they're paid to close, not to maximize your comp. Push back on 'this is our final offer' — it's almost never final for senior+",
-                "Portfolio essentials: GitHub pinned with 4 capstone projects (each with architecture diagram, README, demo GIF); LinkedIn headline with DevOps + MLOps keywords; 2 blog posts written from capstones; 1 meaningful PR to a CNCF project (visible forever)",
-                "Process tactics: ask for interview panel names + roles to prep per-interviewer; elevator pitch 'tell me about yourself' ≤90 sec; every round ends with 2 great questions (not about comp) showing architectural thinking; thank-you note within 24h with one follow-up thought",
-                "Target companies in 2026 for your stack: AI infra (Anthropic, OpenAI, Anyscale, Modal, Together AI, RunPod), hyperscalers (AWS/GCP/Azure platform teams), ML-heavy SaaS (Databricks, HuggingFace, Weights & Biases), AI-native startups (Cursor, Perplexity, Harvey), enterprises building AI platforms internally"
+                "Kubernetes incidents: Pending, CrashLoopBackOff, OOMKilled, bad readiness, failed rollout",
+                "Pipeline incidents: schema break, missing artifact, failed training, data drift",
+                "GPU incidents: low utilization, OOM, unavailable CUDA, bad node scheduling",
+                "Serving incidents: latency spike, error spike, bad model version, queue backlog",
+                "LLM incidents: hallucination spike, cost spike, safety failure, context overflow",
+                "Incident communication: impact, timeline, mitigation, root cause, follow-up"
               ],
-              practicePrompt: "Write 8 STAR+ stories in a doc. Record yourself delivering each one — timer to 3 minutes. Listen back. Cut filler. Do it again. Then have a friend ask you the behavioral questions from the Staff Engineer's Path book and answer cold.",
+              practicePrompt: "Practice this answer: 'p95 inference latency doubled after deployment. Walk me through your debugging process.'",
+              assignment: {
+                title: "Write five incident runbooks",
+                time: "2 hours",
+                objective: "Create concise runbooks for the five most likely interview debugging scenarios.",
+                steps: [
+                  "Write detection signals.",
+                  "Write first five commands or dashboards to check.",
+                  "Write likely root causes.",
+                  "Write mitigation and long-term fix."
+                ],
+                pitfalls: [
+                  "A senior answer separates symptom, mitigation, root cause, and prevention.",
+                  "Do not jump to redeploy before checking metrics and recent changes.",
+                  "For ML issues, system health can be green while model output is wrong."
+                ]
+              },
               resources: [
                 {
-                  id: "haseeb-negotiation",
-                  title: "Ten Rules for Negotiating a Job Offer",
-                  url: "https://haseebq.com/how-not-to-bomb-your-offer-negotiation/",
+                  id: "mlops-k8s-troubleshoot",
+                  title: "Kubernetes Troubleshooting Applications",
+                  url: "https://kubernetes.io/docs/tasks/debug/debug-application/",
                   type: "article",
                   cost: "free",
-                  author: "Haseeb Qureshi",
-                  note: "THE canonical negotiation guide. Read twice before any offer conversation"
+                  author: "Kubernetes"
                 },
                 {
-                  id: "patio11-negotiation",
-                  title: "Salary Negotiation: Make More Money, Be More Valued",
-                  url: "https://www.kalzumeus.com/2012/01/23/salary-negotiation/",
-                  type: "article",
+                  id: "mlops-sre-book",
+                  title: "Site Reliability Engineering",
+                  url: "https://sre.google/sre-book/table-of-contents/",
+                  type: "book",
                   cost: "free",
-                  author: "Patrick McKenzie (patio11)",
-                  note: "The second-best negotiation essay ever written for engineers"
-                },
-                {
-                  id: "staff-eng-path",
-                  title: "The Staff Engineer's Path",
-                  url: "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Tanya Reilly",
-                  note: "For behavioral depth at senior+ levels — many directly-askable questions"
-                },
-                {
-                  id: "will-larson-staff",
-                  title: "Staff Engineer — Leadership Beyond the Management Track",
-                  url: "https://staffeng.com/book",
-                  type: "book",
-                  cost: "paid",
-                  author: "Will Larson"
-                },
-                {
-                  id: "staffeng-stories",
-                  title: "StaffEng — stories from real staff engineers",
-                  url: "https://staffeng.com/stories/",
-                  type: "article",
-                  cost: "free",
-                  note: "Each story reads like a behavioral answer. Study the structure"
-                },
-                {
-                  id: "elegant-puzzle",
-                  title: "An Elegant Puzzle: Systems of Engineering Management",
-                  url: "https://press.stripe.com/an-elegant-puzzle",
-                  type: "book",
-                  cost: "paid",
-                  author: "Will Larson",
-                  note: "Staff-level org context — helps you speak the leadership language"
-                },
-                {
-                  id: "levels-fyi",
-                  title: "levels.fyi — Compensation data",
-                  url: "https://www.levels.fyi/",
-                  type: "article",
-                  cost: "free",
-                  note: "Know your market numbers by level, location, and company"
-                },
-                {
-                  id: "blind-teamblind",
-                  title: "Blind — anonymous compensation + intel",
-                  url: "https://www.teamblind.com/",
-                  type: "article",
-                  cost: "free-tier",
-                  note: "Search company names for recent offer data + interview experiences"
-                },
-                {
-                  id: "candor",
-                  title: "Candor — Offer negotiation coaching",
-                  url: "https://candor.co/",
-                  type: "tool",
-                  cost: "free-tier"
-                },
-                {
-                  id: "interview-kickstart",
-                  title: "Cracking the Coding Interview — Behavioral section",
-                  url: "https://www.crackingthecodinginterview.com/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Gayle McDowell",
-                  note: "Old standby — the behavioral section is still the tightest summary of expectations"
+                  author: "Google"
                 }
               ]
+            },
+            {
+              id: "mlops-w4-day26",
+              type: "day",
+              title: "Day 26: Coding and YAML Interview Prep",
+              shortTitle: "Coding & YAML",
+              dayLabel: "Day 26",
+              description: "Drill the practical artifacts interviewers ask for: Python scripts, FastAPI endpoints, Dockerfiles, Kubernetes YAML, Terraform snippets, and pipeline configs.",
+              concepts: [
+                "Python: parse logs, call APIs, retry failed jobs, validate records",
+                "FastAPI: endpoint with validation, error handling, and metrics",
+                "Dockerfile: slim image, non-root user, health checks, pinned dependencies",
+                "Kubernetes: Deployment, Job, Service, HPA, ConfigMap, Secret, GPU Job",
+                "Terraform: module inputs, remote state, IAM role, EKS node group",
+                "CI/CD: build-test-push-deploy pipeline with environment gates"
+              ],
+              practicePrompt: "Write a Kubernetes GPU Job from memory, then compare it with docs.",
+              assignment: {
+                title: "Artifact speed run",
+                time: "2 hours",
+                objective: "Create six small snippets you can explain in an interview.",
+                steps: [
+                  "Write one Python utility.",
+                  "Write one FastAPI endpoint.",
+                  "Write one Dockerfile.",
+                  "Write one Kubernetes Deployment.",
+                  "Write one GPU Job.",
+                  "Write one GitHub Actions pipeline outline."
+                ],
+                pitfalls: [
+                  "YAML interviews test whether you know probes, resources, labels/selectors, and service wiring.",
+                  "For GPU YAML, forgetting `nvidia.com/gpu` is a common miss.",
+                  "For Terraform, be clear about state, variables, outputs, and least privilege."
+                ]
+              },
+              resources: []
+            },
+            {
+              id: "mlops-w4-day27",
+              type: "day",
+              title: "Day 27: Behavioral and Leadership Stories",
+              shortTitle: "Behavioral Stories",
+              dayLabel: "Day 27",
+              description: "These roles expect ownership, independent delivery, collaboration with data scientists, and incident maturity. Prepare stories that prove those behaviors.",
+              concepts: [
+                "Ownership story: ambiguous platform problem you drove to completion",
+                "Incident story: outage, mitigation, root cause, prevention",
+                "Collaboration story: worked with data scientists/researchers/product/backend",
+                "Tradeoff story: cost vs performance, managed vs self-hosted, speed vs safety",
+                "Mentoring/story: raised platform quality or created reusable patterns",
+                "Client-facing or regulated environment story if relevant"
+              ],
+              practicePrompt: "Prepare STAR answers for: incident ownership, technical tradeoff, cross-functional conflict, and platform improvement.",
+              assignment: {
+                title: "Build your story bank",
+                time: "90 min",
+                objective: "Write six STAR stories aligned to the JDs.",
+                steps: [
+                  "Write situation, task, action, result for each story.",
+                  "Add concrete metrics where possible.",
+                  "Map each story to JD keywords.",
+                  "Practice each answer under 2 minutes."
+                ],
+                pitfalls: [
+                  "Avoid tool-only stories. Explain business or reliability impact.",
+                  "Senior interviews expect tradeoffs and ownership, not just task execution.",
+                  "Metrics make stories credible: latency, cost, deployment time, incident count, uptime."
+                ]
+              },
+              resources: []
+            },
+            {
+              id: "mlops-w4-day28",
+              type: "day",
+              title: "Day 28: Resume, Portfolio & JD Alignment",
+              shortTitle: "Resume & Portfolio",
+              dayLabel: "Day 28",
+              description: "Package the work so recruiters and interviewers see direct alignment with AI infrastructure and MLOps roles.",
+              concepts: [
+                "Resume keywords: Kubernetes, EKS/GKE, GPU, Ray/KubeRay, MLflow, Kubeflow, KServe, vLLM, Terraform, Prometheus, OpenTelemetry",
+                "Project framing: production problem, architecture, metrics, failure handling, cost controls",
+                "GitHub README: diagram, quickstart, tradeoffs, runbooks, screenshots",
+                "JD-specific tailoring: MLOps, AI Infrastructure, AIOps/LLMOps versions",
+                "Portfolio demo: 3-minute and 8-minute versions",
+                "Evidence: snippets, diagrams, dashboards, logs, manifests, pipeline screenshots"
+              ],
+              practicePrompt: "Rewrite three resume bullets to include scale, reliability, automation, or cost impact.",
+              assignment: {
+                title: "Portfolio polish",
+                time: "2 hours",
+                objective: "Turn the three projects into an interview-ready portfolio packet.",
+                steps: [
+                  "Create a README index linking all three projects.",
+                  "Add architecture diagrams and runbooks.",
+                  "Add a JD alignment table.",
+                  "Prepare a short demo script."
+                ],
+                pitfalls: [
+                  "A project without metrics feels like a toy.",
+                  "A diagram without failure modes feels junior.",
+                  "Do not hide your DevOps background; map it to AI infrastructure outcomes."
+                ]
+              },
+              resources: []
+            },
+            {
+              id: "mlops-w4-day29-30",
+              type: "day",
+              title: "Day 29-30: Mock Interviews and Final Gap Closure",
+              shortTitle: "Mocks & Gaps",
+              dayLabel: "Day 29-30",
+              description: "Run focused mock interviews using the JD scenarios. Close only the highest-risk gaps instead of adding new tools.",
+              concepts: [
+                "Mock 1: GPU Kubernetes and distributed training",
+                "Mock 2: LLMOps serving platform and async inference",
+                "Mock 3: ML pipeline, model registry, and CI/CD",
+                "Mock 4: debugging incident and behavioral follow-up",
+                "Gap triage: high probability, high weakness, fast to improve",
+                "Final interview checklist: architecture, commands, metrics, tradeoffs, stories"
+              ],
+              practicePrompt: "Use the JDs as prompts: ask a friend or LLM to interview you for each role for 30 minutes.",
+              assignment: {
+                title: "Final readiness loop",
+                time: "3-4 hours",
+                objective: "Complete four mocks and produce a short list of final weak spots.",
+                steps: [
+                  "Record or take notes during each mock.",
+                  "Score yourself on correctness, clarity, tradeoffs, and operational depth.",
+                  "Rewrite weak answers.",
+                  "Review only the top five weak topics before interviews."
+                ],
+                pitfalls: [
+                  "Do not spend the final days learning new frameworks from scratch.",
+                  "Interviewers reward clear debugging sequence more than tool name-dropping.",
+                  "When uncertain, state assumptions and design a validation path."
+                ]
+              },
+              resources: []
             }
           ]
         }
       ]
     },
-    // ========================================================
-    // PHASE 2: CONTINUED MASTERY
-    // ========================================================
     {
-      id: "do-phase-2",
+      id: "mlops-phase-2",
       title: "Phase 2",
-      subtitle: "Continued Mastery (Months 2–6+)",
-      description: "After the 30-day sprint, go deep. Distributed systems theory, data engineering at scale, FinOps, and the leadership/architecture skills that turn a senior into a staff engineer.",
+      subtitle: "Post-Interview Depth",
+      description: "Use this after the first interview sprint. These topics are useful, but they should not delay readiness for the roles represented by the JDs.",
       granularity: "month",
       months: [
-        // -------------------------------------------------
-        // MONTH 2
-        // -------------------------------------------------
         {
-          id: "do-month-2",
+          id: "mlops-month-2",
           title: "Month 2",
-          subtitle: "Distributed Systems Deep Dive",
-          summary: "The theoretical underpinning that senior candidates are grilled on: consensus, CAP, consistency models, distributed transactions, and the canonical systems papers.",
+          subtitle: "Advanced GPU and Inference Optimization",
+          summary: "Go deeper on CUDA profiling, Triton kernels, quantization, tensor parallelism, serving benchmarks, and GPU cost engineering.",
           nodes: [
             {
-              id: "do-m2-ddia",
+              id: "mlops-m2-gpu-perf",
               type: "topic",
-              title: "Designing Data-Intensive Applications (DDIA)",
-              shortTitle: "DDIA — The Book",
-              description: "If you haven't read DDIA cover-to-cover, this is the single highest-ROI month you can spend. Every staff-level interview draws from it.",
+              title: "GPU Performance Engineering",
+              shortTitle: "GPU Performance",
+              description: "Deepen from operational GPU knowledge into profiling, bottleneck analysis, and inference optimization.",
               concepts: [
-                "Replication: single-leader, multi-leader, leaderless",
-                "Partitioning strategies and rebalancing",
-                "Transactions: isolation levels, serializability",
-                "Consistency models: linearizability, causal, eventual",
-                "Consensus: Paxos, Raft",
-                "Batch vs stream processing architectures"
+                "CUDA streams, memory transfers, pinned memory, and kernel launch overhead",
+                "NVIDIA Nsight Systems and Nsight Compute basics",
+                "Triton language for custom kernels at a high level",
+                "Quantization and serving benchmarks",
+                "MIG, MPS, multi-tenancy, and workload isolation",
+                "Cost per 1K tokens or cost per prediction"
               ],
               resources: [
                 {
-                  id: "ddia",
-                  title: "Designing Data-Intensive Applications",
-                  url: "https://dataintensive.net/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Martin Kleppmann",
-                  note: "The staff-interview canon"
-                },
-                {
-                  id: "kleppmann-talks",
-                  title: "Martin Kleppmann — YouTube talks",
-                  url: "https://www.youtube.com/@kleppmann",
-                  type: "video",
-                  cost: "free"
-                }
-              ]
-            },
-            {
-              id: "do-m2-papers",
-              type: "topic",
-              title: "The Canonical Distributed Systems Papers",
-              shortTitle: "Systems Papers",
-              description: "Read the originals: Paxos, Raft, Dynamo, Spanner, Bigtable, Kafka. Not because you'll implement them, but because interviewers expect fluency.",
-              concepts: [
-                "Paxos Made Simple (Lamport)",
-                "In Search of an Understandable Consensus Algorithm (Raft — Ongaro & Ousterhout)",
-                "Dynamo: Amazon's Highly Available Key-value Store",
-                "Spanner: Google's Globally-Distributed Database",
-                "Bigtable: A Distributed Storage System",
-                "Kafka: a Distributed Messaging System for Log Processing"
-              ],
-              resources: [
-                {
-                  id: "papers-we-love",
-                  title: "Papers We Love (GitHub)",
-                  url: "https://github.com/papers-we-love/papers-we-love",
-                  type: "github",
+                  id: "mlops-nsight",
+                  title: "NVIDIA Nsight Systems",
+                  url: "https://developer.nvidia.com/nsight-systems",
+                  type: "tool",
                   cost: "free",
-                  note: "Curated systems papers, all in one place"
+                  author: "NVIDIA"
                 },
                 {
-                  id: "the-morning-paper",
-                  title: "The Morning Paper (Adrian Colyer)",
-                  url: "https://blog.acolyer.org/",
+                  id: "mlops-triton",
+                  title: "Triton Language Documentation",
+                  url: "https://triton-lang.org/main/index.html",
                   type: "article",
                   cost: "free",
-                  note: "Paper summaries — start here if PDFs intimidate you"
+                  author: "OpenAI/Triton"
                 }
               ]
             }
           ]
         },
-        // -------------------------------------------------
-        // MONTH 3
-        // -------------------------------------------------
         {
-          id: "do-month-3",
+          id: "mlops-month-3",
           title: "Month 3",
-          subtitle: "Data Engineering & Streaming",
-          summary: "MLOps requires solid data engineering. Kafka, Flink, Spark, lakehouse formats, and the streaming-first architectures powering modern ML.",
+          subtitle: "Platform Engineering and Multi-Team Governance",
+          summary: "Deepen self-service platforms, Backstage, Crossplane, policy-as-code, cost allocation, compliance, and regulated model governance.",
           nodes: [
             {
-              id: "do-m3-streaming",
+              id: "mlops-m3-platform",
               type: "topic",
-              title: "Streaming Systems: Kafka, Flink, Spark",
-              shortTitle: "Streaming Systems",
-              description: "Real-time features, online inference pipelines, and event-driven architectures — all built on Kafka + Flink or Spark Structured Streaming.",
+              title: "Self-Service ML Platform",
+              shortTitle: "Self-Service Platform",
+              description: "Move from interview-level platform design to a real internal developer platform for data scientists and ML engineers.",
               concepts: [
-                "Kafka internals: log structure, partitions, consumer groups, exactly-once",
-                "Kafka Connect, Kafka Streams, ksqlDB",
-                "Apache Flink — true streaming, event time, watermarks",
-                "Spark Structured Streaming — micro-batch tradeoffs",
-                "CDC (Change Data Capture): Debezium for DB → Kafka",
-                "Schema registry, Avro/Protobuf evolution"
+                "Backstage templates for training jobs, model services, and pipelines",
+                "Crossplane or Terraform modules for cloud resources",
+                "Policy-as-code with OPA/Gatekeeper or Kyverno",
+                "Cost allocation by team, project, model, and environment",
+                "Governance workflows for regulated ML",
+                "Platform product thinking: golden paths, docs, support, and adoption metrics"
               ],
               resources: [
                 {
-                  id: "kafka-definitive",
-                  title: "Kafka: The Definitive Guide (2nd Ed)",
-                  url: "https://www.confluent.io/resources/kafka-the-definitive-guide/",
-                  type: "book",
-                  cost: "free",
-                  author: "Confluent",
-                  note: "Free download"
-                },
-                {
-                  id: "streaming-systems-book",
-                  title: "Streaming Systems (O'Reilly)",
-                  url: "https://www.oreilly.com/library/view/streaming-systems/9781491983867/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Tyler Akidau et al.",
-                  note: "The conceptual foundation of modern streaming"
-                },
-                {
-                  id: "debezium",
-                  title: "Debezium — CDC platform",
-                  url: "https://debezium.io/documentation/",
-                  type: "tool",
-                  cost: "free"
-                }
-              ]
-            },
-            {
-              id: "do-m3-lakehouse",
-              type: "topic",
-              title: "The Lakehouse: Delta Lake, Iceberg, Hudi",
-              shortTitle: "Lakehouse Formats",
-              description: "The open table formats that finally made data lakes usable for ML. Every senior data/ML platform engineer needs to pick and defend one.",
-              concepts: [
-                "Delta Lake — Databricks' format, widely adopted",
-                "Apache Iceberg — Netflix's format, vendor-neutral momentum in 2026",
-                "Apache Hudi — upserts-first, streaming-friendly",
-                "ACID on object storage — how it works",
-                "Schema evolution, time travel, Z-ordering",
-                "When you need a lakehouse vs a warehouse"
-              ],
-              resources: [
-                {
-                  id: "iceberg-docs",
-                  title: "Apache Iceberg Documentation",
-                  url: "https://iceberg.apache.org/docs/latest/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "delta-lake",
-                  title: "Delta Lake Documentation",
-                  url: "https://docs.delta.io/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "hudi-docs",
-                  title: "Apache Hudi",
-                  url: "https://hudi.apache.org/docs/overview",
-                  type: "article",
-                  cost: "free"
-                }
-              ]
-            }
-          ]
-        },
-        // -------------------------------------------------
-        // MONTH 4
-        // -------------------------------------------------
-        {
-          id: "do-month-4",
-          title: "Month 4",
-          subtitle: "FinOps & Cost Engineering",
-          summary: "In 2026, cloud cost is the #1 lever most companies ignore. Senior DevOps who can demonstrably reduce cloud spend by 20%+ command staff-level offers.",
-          nodes: [
-            {
-              id: "do-m4-finops",
-              type: "topic",
-              title: "FinOps — Cloud Financial Operations",
-              shortTitle: "FinOps Framework",
-              description: "FinOps Foundation's framework, certifications, and practices. How to build the inform → optimize → operate loop at organizational scale.",
-              concepts: [
-                "FinOps phases: Inform, Optimize, Operate",
-                "Showback vs chargeback models",
-                "Unit economics: $/request, $/inference, $/user",
-                "RI/Savings Plans optimization",
-                "Spot instance strategy and interruption handling",
-                "Rightsizing with Cost Explorer, GCP Recommender, Azure Advisor",
-                "Tagging strategies and cost allocation",
-                "FinOps + sustainability: carbon-aware scheduling"
-              ],
-              resources: [
-                {
-                  id: "finops-framework",
-                  title: "FinOps Foundation — Framework & Certifications",
-                  url: "https://www.finops.org/framework/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "cloud-finops-book",
-                  title: "Cloud FinOps (2nd Ed)",
-                  url: "https://www.oreilly.com/library/view/cloud-finops-2nd/9781492054627/",
-                  type: "book",
-                  cost: "paid",
-                  author: "J.R. Storment & Mike Fuller",
-                  note: "The canonical FinOps book"
-                },
-                {
-                  id: "vantage",
-                  title: "Vantage — Cost observability",
-                  url: "https://www.vantage.sh/",
-                  type: "tool",
-                  cost: "free-tier"
-                }
-              ]
-            }
-          ]
-        },
-        // -------------------------------------------------
-        // MONTH 5
-        // -------------------------------------------------
-        {
-          id: "do-month-5",
-          title: "Month 5",
-          subtitle: "Leadership, Architecture & Platform Strategy",
-          summary: "The transition from senior IC to staff/principal isn't technical — it's influence, writing, and strategy. The skills most DevOps engineers never explicitly practice.",
-          nodes: [
-            {
-              id: "do-m5-staff-eng",
-              type: "topic",
-              title: "The Staff Engineer Playbook",
-              shortTitle: "Staff Engineering",
-              description: "Tanya Reilly, Will Larson, and Charity Majors have written the canon. Staff-level hiring looks for 'technical leadership without direct reports.'",
-              concepts: [
-                "The Staff Engineer's Path archetypes: Tech Lead, Architect, Solver, Right Hand",
-                "Influence without authority — building through writing, not decree",
-                "ADRs (Architecture Decision Records) as the senior's primary artifact",
-                "Tech strategy documents and roadmaps",
-                "Running RFCs and design reviews",
-                "Mentorship as a force multiplier",
-                "The staff-level impact conversation: what multiplies teams?"
-              ],
-              resources: [
-                {
-                  id: "staff-engineers-path",
-                  title: "The Staff Engineer's Path",
-                  url: "https://www.oreilly.com/library/view/the-staff-engineers/9781098118723/",
-                  type: "book",
-                  cost: "paid",
-                  author: "Tanya Reilly"
-                },
-                {
-                  id: "staff-eng-book",
-                  title: "Staff Engineer (Larson)",
-                  url: "https://staffeng.com/book",
-                  type: "book",
-                  cost: "paid",
-                  author: "Will Larson"
-                },
-                {
-                  id: "staff-eng-site",
-                  title: "StaffEng — Stories & guides",
-                  url: "https://staffeng.com/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "adr-github",
-                  title: "Architecture Decision Records (ADRs)",
-                  url: "https://github.com/joelparkerhenderson/architecture-decision-record",
-                  type: "github",
-                  cost: "free"
-                }
-              ]
-            },
-            {
-              id: "do-m5-writing",
-              type: "topic",
-              title: "Technical Writing & Communication",
-              shortTitle: "Technical Writing",
-              description: "The single most underrated staff+ skill. Your design docs, postmortems, and RFCs become your lasting artifact.",
-              concepts: [
-                "Google's Technical Writing Courses (free)",
-                "Structure: TL;DR, context, options, decision, trade-offs",
-                "Postmortem culture — blameless, timeline-driven, action-oriented",
-                "Pre-mortems for risky changes",
-                "Writing memos that scale across 50+ engineers"
-              ],
-              resources: [
-                {
-                  id: "google-tech-writing",
-                  title: "Google Technical Writing Courses",
-                  url: "https://developers.google.com/tech-writing",
-                  type: "course",
-                  cost: "free",
-                  author: "Google"
-                },
-                {
-                  id: "writing-for-engineers",
-                  title: "Writing for Engineers (Heinemeier Hansson, Fournier)",
-                  url: "https://www.engineersneedwords.com/",
-                  type: "article",
-                  cost: "free"
-                }
-              ]
-            }
-          ]
-        },
-        // -------------------------------------------------
-        // MONTH 6+
-        // -------------------------------------------------
-        {
-          id: "do-month-6",
-          title: "Month 6+",
-          subtitle: "Specialization Paths",
-          summary: "By now you can defend senior-level interviews. Pick one to two tracks to go deep and start becoming known for — specialization is how you break into staff/principal and get recruited unsolicited.",
-          nodes: [
-            {
-              id: "do-m6-paths",
-              type: "topic",
-              title: "Four Specialization Tracks",
-              shortTitle: "Specialization Tracks",
-              description: "Pick where you want your reputation to live. All four are in high demand in 2026, but each attracts a different kind of role.",
-              concepts: [
-                "Track A — AI/ML Infrastructure: vLLM, GPU clusters, model serving at scale. Companies: Anyscale, Modal, Together AI, Databricks, hyperscalers",
-                "Track B — Platform Engineering Lead: IDPs, golden paths, DX. Every scaling company in 2026 has a platform team hiring for this",
-                "Track C — SRE / Reliability Architect: SLOs at scale, chaos engineering, incident leadership. Google/Meta/Stripe/finance all pay top dollar",
-                "Track D — Security Platform Engineer: DevSecOps, zero-trust, supply chain. Fastest-growing salary band post-SolarWinds"
-              ],
-              resources: [
-                {
-                  id: "cncf-landscape",
-                  title: "CNCF Landscape — project map",
-                  url: "https://landscape.cncf.io/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "thoughtworks-radar",
-                  title: "ThoughtWorks Technology Radar",
-                  url: "https://www.thoughtworks.com/radar",
+                  id: "mlops-backstage",
+                  title: "Backstage Software Templates",
+                  url: "https://backstage.io/docs/features/software-templates/",
                   type: "article",
                   cost: "free",
-                  note: "Quarterly signal for what's rising/falling"
-                }
-              ]
-            },
-            {
-              id: "do-m6-stay-current",
-              type: "topic",
-              title: "Staying Current — People, Newsletters, Conferences",
-              shortTitle: "Staying Current",
-              description: "The operator you follow matters more than the framework you learn. Build a signal diet.",
-              concepts: [
-                "People: Kelsey Hightower, Liz Rice, Charity Majors, Chip Huyen, Patrick Debois, Jessie Frazelle, Ian Coldwater, Tim Hockin",
-                "Newsletters: DevOps Weekly, The New Stack, KubeWeekly, SRE Weekly, MLOps Community",
-                "Conferences: KubeCon + CloudNativeCon (CNCF flagship), SREcon, re:Invent, Data + AI Summit, MLOps World",
-                "Communities: CNCF Slack, Kubernetes Slack, MLOps Community Slack, r/devops, r/sre, r/kubernetes",
-                "Twitter/X lists: curate 50-100 practitioners",
-                "Podcasts: Kubernetes Podcast (Google), The Cloudcast, Software Engineering Daily, MLOps Community podcast"
-              ],
-              resources: [
+                  author: "Backstage"
+                },
                 {
-                  id: "kubeweekly",
-                  title: "KubeWeekly Newsletter",
-                  url: "https://www.cncf.io/kubeweekly/",
+                  id: "mlops-kyverno",
+                  title: "Kyverno Documentation",
+                  url: "https://kyverno.io/docs/",
                   type: "article",
                   cost: "free",
-                  author: "CNCF"
-                },
-                {
-                  id: "thenewstack",
-                  title: "The New Stack",
-                  url: "https://thenewstack.io/",
-                  type: "article",
-                  cost: "free"
-                },
-                {
-                  id: "mlops-community",
-                  title: "MLOps Community",
-                  url: "https://mlops.community/",
-                  type: "article",
-                  cost: "free",
-                  note: "Slack + podcast + newsletter"
-                },
-                {
-                  id: "kubernetes-podcast",
-                  title: "Kubernetes Podcast from Google",
-                  url: "https://kubernetespodcast.com/",
-                  type: "article",
-                  cost: "free"
+                  author: "Kyverno"
                 }
               ]
             }

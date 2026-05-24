@@ -1,11 +1,14 @@
 // ============================================================
 // ROADMAP TRACKER — Main Application Logic
-// State is persisted in localStorage under 'ai-roadmap-v1'
+// State syncs to /api/state when Cloudflare Pages Functions are available, with localStorage fallback.
 // ============================================================
 
 const STORAGE_KEY = 'ai-roadmap-v1';
 const STORAGE_VERSION = 2;
 const CURRENT_ROADMAP_KEY = 'ai-roadmap-current';
+const STATE_API_URL = '/api/state';
+let serverSyncAvailable = false;
+let serverSaveTimer = null;
 
 // ── State ───────────────────────────────────────────────────
 let appState = {
@@ -63,6 +66,63 @@ function createDefaultUserState() {
 
 function saveUserState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(appState.userState));
+  scheduleServerSave();
+}
+
+function isValidUserState(state) {
+  return state && state.version === STORAGE_VERSION && state.nodes && typeof state.nodes === 'object';
+}
+
+function hasTrackedState(state) {
+  return isValidUserState(state) && Object.keys(state.nodes).length > 0;
+}
+
+async function hydrateUserState() {
+  const localState = loadUserState();
+  appState.userState = localState;
+
+  try {
+    const res = await fetch(STATE_API_URL, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`State API returned ${res.status}`);
+    const serverState = await res.json();
+    if (!isValidUserState(serverState)) throw new Error('Invalid server state');
+
+    serverSyncAvailable = true;
+    if (hasTrackedState(serverState)) {
+      appState.userState = serverState;
+      saveUserStateRaw(serverState);
+      return;
+    }
+
+    if (hasTrackedState(localState)) {
+      appState.userState = localState;
+      scheduleServerSave(0);
+    }
+  } catch {
+    serverSyncAvailable = false;
+  }
+}
+
+function scheduleServerSave(delay = 300) {
+  if (!serverSyncAvailable) return;
+  clearTimeout(serverSaveTimer);
+  serverSaveTimer = setTimeout(() => {
+    saveUserStateToServer(appState.userState);
+  }, delay);
+}
+
+async function saveUserStateToServer(state) {
+  try {
+    const res = await fetch(STATE_API_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(state)
+    });
+    if (!res.ok) throw new Error(`State API returned ${res.status}`);
+    serverSyncAvailable = true;
+  } catch {
+    serverSyncAvailable = false;
+  }
 }
 
 function getNodeState(nodeId) {
@@ -574,6 +634,35 @@ function renderDetailPanel(node) {
           </div>
         ` : ''}
 
+        <!-- Hands-On Assignment (with pitfalls / interview gotchas) -->
+        ${node.assignment ? `
+          <div class="bg-indigo-50 border border-indigo-200 rounded-lg p-3.5">
+            <div class="flex items-baseline justify-between mb-1.5 gap-2 flex-wrap">
+              <div class="text-xs font-bold text-indigo-700 uppercase tracking-wider">Hands-On Assignment</div>
+              ${node.assignment.time ? `<span class="text-xs text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded">⏱ ${node.assignment.time}</span>` : ''}
+            </div>
+            ${node.assignment.title ? `<h5 class="text-sm font-semibold text-gray-900 mb-1.5">${node.assignment.title}</h5>` : ''}
+            ${node.assignment.objective ? `<p class="text-sm text-gray-700 leading-relaxed mb-2.5">${node.assignment.objective}</p>` : ''}
+
+            ${node.assignment.steps && node.assignment.steps.length ? `
+              <div class="text-xs font-bold text-gray-500 uppercase tracking-wider mt-3 mb-1.5">Steps</div>
+              <ol class="list-decimal pl-5 text-sm text-gray-700 space-y-1">
+                ${node.assignment.steps.map(s => `<li>${s}</li>`).join('')}
+              </ol>
+            ` : ''}
+
+            ${node.assignment.pitfalls && node.assignment.pitfalls.length ? `
+              <div class="text-xs font-bold text-red-700 uppercase tracking-wider mt-3 mb-1.5 flex items-center gap-1">
+                <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"/></svg>
+                Pitfalls &amp; Interview Gotchas
+              </div>
+              <ul class="text-sm text-gray-700 space-y-1.5">
+                ${node.assignment.pitfalls.map(p => `<li class="pl-2.5 border-l-2 border-red-300 leading-snug">${p}</li>`).join('')}
+              </ul>
+            ` : ''}
+          </div>
+        ` : ''}
+
         <!-- Resources -->
         <div>
           <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Resources</h4>
@@ -820,4 +909,7 @@ function init() {
 }
 
 // Boot
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', async () => {
+  await hydrateUserState();
+  init();
+});

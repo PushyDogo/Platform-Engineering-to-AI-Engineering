@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "dev": "npx wrangler pages dev roadmap-tracker --d1 DB=roadmap-tracker-db",
-    "deploy": "npx wrangler pages deploy roadmap-tracker",
+    "dev": "npx wrangler pages dev roadmap/web --d1 DB=roadmap-tracker-db",
+    "deploy": "npx wrangler pages deploy roadmap/web",
     "d1:create": "npx wrangler d1 create roadmap-tracker-db",
     "d1:migrate:local": "npx wrangler d1 migrations apply roadmap-tracker-db --local",
     "d1:migrate:remote": "npx wrangler d1 migrations apply roadmap-tracker-db --remote"

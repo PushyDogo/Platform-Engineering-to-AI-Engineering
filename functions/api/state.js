@@ -1,8 +1,10 @@
-const STORAGE_VERSION = 2;
-const STATE_ID = 'default';
+// Must match STORAGE_VERSION in roadmap/web/app.js and STATE_VERSION in roadmap/server.py.
+const STORAGE_VERSION = 3;
+// The old tracker's progress stays in the 'default' row; the new roadmap uses its own.
+const STATE_ID = 'roadmap-v3';
 
 function defaultState() {
-  return { version: STORAGE_VERSION, nodes: {} };
+  return { version: STORAGE_VERSION, updatedAt: 0, modules: {} };
 }
 
 function jsonResponse(payload, status = 200) {
@@ -19,9 +21,9 @@ function isValidState(state) {
   return (
     state &&
     state.version === STORAGE_VERSION &&
-    state.nodes &&
-    typeof state.nodes === 'object' &&
-    !Array.isArray(state.nodes)
+    state.modules &&
+    typeof state.modules === 'object' &&
+    !Array.isArray(state.modules)
   );
 }
 

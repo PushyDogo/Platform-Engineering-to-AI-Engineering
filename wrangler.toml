@@ -1,5 +1,5 @@
 name = "roadmap-tracker"
-pages_build_output_dir = "roadmap-tracker"
+pages_build_output_dir = "roadmap/web"
 compatibility_date = "2025-12-01"
 
 [[d1_databases]]
